@@ -5,12 +5,26 @@ import App from '../App';
 import { signOut } from '../lib/auth';
 
 const MOCK_PRODUCTS = [
-  { id: 1, name: 'Café Antigua', price_cents: 4550, stock: 4 },
-  { id: 2, name: 'Atol de elote', price_cents: 1500, stock: 0 },
+  {
+    id: 1,
+    sku: 'CAF-ANT-01',
+    name: 'Café Antigua',
+    category: 'Bebidas',
+    price_cents: 4550,
+    stock: 4,
+  },
+  {
+    id: 2,
+    sku: 'ATO-ELO-01',
+    name: 'Atol de elote',
+    category: 'Bebidas',
+    price_cents: 1500,
+    stock: 0,
+  },
 ];
 
 const MOCK_ORDERS = [
-  { id: 101, status: 'paid', total_cents: 4550 },
+  { id: 101, user_id: 'local-ana@galileo.edu', status: 'paid', total_cents: 4550 },
 ];
 
 function createJsonResponse(payload: unknown, status = 200): Response {
@@ -53,7 +67,10 @@ describe('ca_5_2 App vistas y flujo principal', () => {
         return createJsonResponse(MOCK_PRODUCTS);
       }
       if (url.endsWith('/api/orders') && init?.method === 'POST') {
-        return createJsonResponse({ id: 101, status: 'paid', total_cents: 4550 }, 201);
+        return createJsonResponse(
+          { id: 101, user_id: 'local-ana@galileo.edu', status: 'paid', total_cents: 4550 },
+          201,
+        );
       }
       if (url.endsWith('/api/orders/mine')) {
         return createJsonResponse(MOCK_ORDERS);
@@ -85,13 +102,17 @@ describe('ca_5_2 App vistas y flujo principal', () => {
     expect(await screen.findByText('Pedido #101 creado.')).toBeInTheDocument();
     expect(screen.getByTestId('cart-count')).toHaveTextContent('Carrito: 0');
 
-    // Verifica que POST /api/orders envió Authorization Bearer
+    // Verifica que POST /api/orders envió Authorization Bearer y body { sku, quantity }
     const orderCall = fetchMock.mock.calls.find(
       ([url, init]) => String(url).endsWith('/api/orders') && init?.method === 'POST',
     );
     expect(orderCall).toBeDefined();
     const headers = new Headers(orderCall?.[1]?.headers);
     expect(headers.get('Authorization')).toBe('Bearer dev-token:ana@galileo.edu');
+    expect(JSON.parse(String(orderCall?.[1]?.body))).toEqual({
+      sku: 'CAF-ANT-01',
+      quantity: 1,
+    });
   });
 
   it('ca_5_2 navega a OrdersView y cierra sesión correctamente', async () => {

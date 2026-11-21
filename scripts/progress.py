@@ -22,7 +22,10 @@ def main() -> int:
     passed = 0
     for num, title, cmd in STEPS:
         res = subprocess.run(cmd, cwd=ROOT, capture_output=True, text=True)
-        if res.returncode == 0:
+        out = (res.stdout or "") + (res.stderr or "")
+        if res.returncode == 0 and "passed" not in out and "skipped" in out:
+            badge = "[SKIP]"
+        elif res.returncode == 0:
             passed += 1
             badge = "[PASS]"
         else:

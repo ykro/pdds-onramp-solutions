@@ -4,8 +4,10 @@ from __future__ import annotations
 
 import os
 import shutil
+import socket
 import subprocess
 import sys
+from urllib.parse import urlparse
 
 
 def _check_cmd(name: str, fix: str) -> bool:
@@ -15,6 +17,17 @@ def _check_cmd(name: str, fix: str) -> bool:
         return True
     print(f"[FALTA] {name} no está instalado. Solución: {fix}")
     return False
+
+
+def _check_postgres(db_url: str) -> None:
+    parsed = urlparse(db_url)
+    host = parsed.hostname or "localhost"
+    port = parsed.port or 5432
+    try:
+        with socket.create_connection((host, port), timeout=1.5):
+            print(f"[OK]    PostgreSQL responde en {host}:{port}")
+    except OSError:
+        print(f"[AVISO] PostgreSQL no responde en {host}:{port}. Para Pasos 3 y 4 corre: make db-up")
 
 
 def main() -> int:
@@ -28,10 +41,10 @@ def main() -> int:
     db_url = os.environ.get("DATABASE_URL", "")
     if db_url:
         print("[OK]    DATABASE_URL definida")
+        _check_postgres(db_url)
     else:
-        print("[AVISO] DATABASE_URL no está definida (necesaria desde el Paso 3). Copia .env.example a .env.")
+        print("[AVISO] DATABASE_URL no está definida (necesaria en Pasos 3 y 4). Copia .env.example a .env y corre make db-up.")
 
-    # Check if template copy is behind upstream (non-blocking)
     try:
         res = subprocess.run(
             ["git", "rev-list", "--count", "HEAD"],

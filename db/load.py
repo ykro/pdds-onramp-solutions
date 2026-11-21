@@ -34,6 +34,15 @@ def apply_migrations(conn: psycopg.Connection, up_to: int = 2) -> None:
             sql = sql_file.read_text(encoding="utf-8")
             with conn.cursor() as cur:
                 cur.execute(sql)
+            if prefix == 1 and up_to >= 2:
+                with conn.cursor() as cur:
+                    cur.execute("SELECT to_regclass('public.products')")
+                    row = cur.fetchone()
+                    exists = (row["to_regclass"] if isinstance(row, dict) else row[0]) if row else None
+                if not exists:
+                    base_sql = (ROOT_DIR / "db" / "bootstrap" / "001_base.sql").read_text(encoding="utf-8")
+                    with conn.cursor() as cur:
+                        cur.execute(base_sql)
     conn.commit()
 
 
@@ -58,7 +67,7 @@ def load_csv_data(conn: psycopg.Connection) -> None:
             )
             row = cur.fetchone()
             assert row is not None
-            sku_to_id[prod.sku] = int(row[0])
+            sku_to_id[prod.sku] = int(row["id"] if isinstance(row, dict) else row[0])
 
         with (DATA_DIR / "orders.csv").open(newline="", encoding="utf-8") as fh:
             for row in csv.DictReader(fh):

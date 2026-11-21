@@ -78,6 +78,7 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
   if (neonAuthUrl) {
     const response = await fetch(`${neonAuthUrl}/sign-in/email`, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -89,15 +90,23 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
     }
 
     const data = (await response.json()) as {
-      token?: string;
-      access_token?: string;
-      session?: { token?: string };
       user?: { id?: string; email?: string; name?: string };
     };
 
-    const token = data.token ?? data.access_token ?? data.session?.token;
-    if (!token) {
-      throw new Error('Neon Auth no devolvió un token de sesión.');
+    let jwt = response.headers.get('set-auth-jwt');
+    if (!jwt) {
+      const tokenResponse = await fetch(`${neonAuthUrl}/token`, {
+        method: 'GET',
+        credentials: 'include',
+      });
+      if (tokenResponse.ok) {
+        const tokenData = (await tokenResponse.json()) as { token?: string };
+        jwt = tokenData.token ?? null;
+      }
+    }
+
+    if (!jwt) {
+      throw new Error('Neon Auth no devolvió un JWT válido.');
     }
 
     const user: AuthUser = {
@@ -106,7 +115,7 @@ export async function signIn(email: string, password: string): Promise<AuthUser>
       name: data.user?.name,
     };
 
-    writeSession({ token, user });
+    writeSession({ token: jwt, user });
     return user;
   }
 
@@ -134,6 +143,7 @@ export async function signOut(): Promise<void> {
     try {
       await fetch(`${neonAuthUrl}/sign-out`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           Authorization: `Bearer ${currentToken}`,
         },

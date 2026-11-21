@@ -1,33 +1,25 @@
 import { getToken } from './auth';
 
 export interface Product {
-  id: string | number;
-  sku?: string;
+  id: number;
+  sku: string;
   name: string;
+  category: string;
   price_cents: number;
   stock: number;
 }
 
-export interface OrderItem {
-  product_id: string | number;
-  name?: string;
-  quantity: number;
-  unit_price_cents?: number;
-}
-
 export interface Order {
-  id: string | number;
+  id: number;
+  user_id: string;
   status: string;
   total_cents: number;
   created_at?: string;
-  items?: OrderItem[];
 }
 
 export interface CreateOrderRequest {
-  items: Array<{
-    product_id: string | number;
-    quantity: number;
-  }>;
+  sku: string;
+  quantity: number;
 }
 
 export interface HealthResponse {

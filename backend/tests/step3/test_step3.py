@@ -40,18 +40,6 @@ pytestmark = [
 ]
 
 
-@pytest.fixture()
-def seeded_db() -> Any:
-    with psycopg.connect(DB_URL, row_factory=dict_row, autocommit=True) as admin_conn:
-        with admin_conn.cursor() as cur:
-            cur.execute("DROP TABLE IF EXISTS idempotency_keys, admins, order_items, orders, products CASCADE")
-
-    with psycopg.connect(DB_URL, row_factory=dict_row) as conn:
-        apply_migrations(conn, up_to=1)
-        load_csv_data(conn)
-        yield conn
-
-
 def test_ca_3_1_constraints_reject_negative_stock(seeded_db: psycopg.Connection[Any]) -> None:
     with pytest.raises(psycopg.errors.CheckViolation):
         with seeded_db.cursor() as cur:

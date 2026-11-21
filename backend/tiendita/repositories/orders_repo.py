@@ -199,7 +199,7 @@ class PostgresStoreRepository:
     def list_products(self) -> list[dict[str, Any]]:
         with get_connection(self._dsn) as conn, conn.cursor() as cur:
             cur.execute(
-                "SELECT sku, name, category, price_cents, stock FROM products ORDER BY sku ASC"
+                "SELECT id, sku, name, category, price_cents, stock FROM products ORDER BY sku ASC"
             )
             return list(cur.fetchall())
 

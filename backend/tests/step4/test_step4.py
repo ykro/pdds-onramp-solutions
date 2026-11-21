@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
@@ -157,7 +158,10 @@ def test_ca_4_2_and_4_3_and_4_4_api_layers_jwt_and_authz(
     # CA-4.4: Alice only sees Alice's orders
     alice_token = local_jwks["sign"]("usr_alice")
     resp = client.get("/api/orders/mine", headers={"Authorization": f"Bearer {alice_token}"})
-    assert resp.status_code == 200
+    assert resp.status_code == 200, (
+        f"CA-4.3/4.4: Se esperaba 200 con token válido y se obtuvo {resp.status_code}. "
+        "Revisa verify_jwt_token en backend/tiendita/api/auth.py y get_my_orders en app.py."
+    )
     orders = resp.json()
     assert len(orders) == 1 and orders[0]["user_id"] == "usr_alice", (
         "CA-4.4: GET /api/orders/mine devolvió pedidos de otro usuario."
@@ -169,12 +173,23 @@ def test_ca_4_2_and_4_3_and_4_4_api_layers_jwt_and_authz(
         json={"sku": "SKU-001", "quantity": 1},
         headers={"Authorization": f"Bearer {alice_token}"},
     )
-    assert created.status_code == 201
+    assert created.status_code == 201, (
+        f"CA-4.2: POST /api/orders devolvió {created.status_code} en lugar de 201."
+    )
 
 
 def test_ca_4_5_adr_has_required_sections() -> None:
     assert ADR_FILE.exists(), "CA-4.5: Falta docs/decisions/0001-auth.md."
     text = ADR_FILE.read_text(encoding="utf-8")
+    text = re.sub(
+        r"<!--\s*SOLUTION_REPLACE\s*-->.*?<!--\s*SOLUTION_END\s*-->",
+        "",
+        text,
+        flags=re.DOTALL,
+    )
+    assert "TODO" not in text, (
+        "CA-4.5: Completa docs/decisions/0001-auth.md y elimina los marcadores TODO."
+    )
     for heading in ("Contexto", "Decisión", "Consecuencias"):
         assert heading in text, f"CA-4.5: El ADR necesita la sección '{heading}'."
     assert len(text.strip()) >= 200, "CA-4.5: El ADR está demasiado corto; explica el porqué."

@@ -5,21 +5,27 @@ import type { Product } from '../lib/api';
 
 const CAFE: Product = {
   id: 1,
+  sku: 'CAF-ANT-01',
   name: 'Café Antigua',
+  category: 'Bebidas',
   price_cents: 4550,
   stock: 3,
 };
 
 const PAN: Product = {
   id: 2,
+  sku: 'PAN-DUL-01',
   name: 'Pan dulce',
+  category: 'Panadería',
   price_cents: 1200,
   stock: 5,
 };
 
 const AGOTADO: Product = {
   id: 3,
+  sku: 'CHO-ART-01',
   name: 'Chocolate artesanal',
+  category: 'Bebidas',
   price_cents: 2500,
   stock: 0,
 };

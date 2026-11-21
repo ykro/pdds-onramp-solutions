@@ -2,14 +2,33 @@ import AxeBuilder from '@axe-core/playwright';
 import { expect, test } from '@playwright/test';
 
 const MOCK_PRODUCTS = [
-  { id: 1, name: 'Café Antigua', price_cents: 4550, stock: 4 },
-  { id: 2, name: 'Pan dulce', price_cents: 1200, stock: 6 },
+  {
+    id: 1,
+    sku: 'CAF-ANT-01',
+    name: 'Café Antigua',
+    category: 'Bebidas',
+    price_cents: 4550,
+    stock: 4,
+  },
+  {
+    id: 2,
+    sku: 'PAN-DUL-01',
+    name: 'Pan dulce',
+    category: 'Panadería',
+    price_cents: 1200,
+    stock: 6,
+  },
 ];
 
 test('CA-5.4: flujo de compra completo sin violaciones críticas ni serias de accesibilidad', async ({
   page,
 }) => {
-  const createdOrders: Array<{ id: number; status: string; total_cents: number }> = [];
+  const createdOrders: Array<{
+    id: number;
+    user_id: string;
+    status: string;
+    total_cents: number;
+  }> = [];
 
   await page.route('**/api/**', async (route) => {
     const request = route.request();
@@ -34,7 +53,14 @@ test('CA-5.4: flujo de compra completo sin violaciones críticas ni serias de ac
     }
 
     if (url.pathname === '/api/orders' && request.method() === 'POST') {
-      const order = { id: 501, status: 'paid', total_cents: 4550 };
+      const payload = request.postDataJSON() as { sku: string; quantity: number };
+      expect(payload).toEqual({ sku: 'CAF-ANT-01', quantity: 1 });
+      const order = {
+        id: 501,
+        user_id: 'local-estudiante@galileo.edu',
+        status: 'paid',
+        total_cents: 4550,
+      };
       createdOrders.push(order);
       await route.fulfill({
         status: 201,

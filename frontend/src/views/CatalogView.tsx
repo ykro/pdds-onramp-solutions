@@ -51,15 +51,26 @@ export function CatalogView({ cart, onOrderCreated }: CatalogViewProps) {
     setStatusMessage(null);
 
     try {
-      const order = await createOrder({
-        items: cart.items.map((item) => ({
-          product_id: item.product.id,
+      const createdOrders: Order[] = [];
+      for (const item of cart.items) {
+        const order = await createOrder({
+          sku: item.product.sku,
           quantity: item.quantity,
-        })),
-      });
+        });
+        createdOrders.push(order);
+      }
       cart.clearCart();
-      setStatusMessage(`Pedido #${order.id} creado.`);
-      onOrderCreated?.(order);
+      const lastOrder = createdOrders[createdOrders.length - 1];
+      if (createdOrders.length === 1 && lastOrder) {
+        setStatusMessage(`Pedido #${lastOrder.id} creado.`);
+      } else {
+        setStatusMessage(
+          `Pedidos ${createdOrders.map((order) => `#${order.id}`).join(', ')} creados.`,
+        );
+      }
+      if (lastOrder) {
+        onOrderCreated?.(lastOrder);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al procesar pago.');
     } finally {
