@@ -26,23 +26,11 @@ def get_direct_url() -> str:
     )
 
 
-def apply_migrations(conn: psycopg.Connection, up_to: int = 2) -> None:
-    files = sorted(MIGRATIONS_DIR.glob("*.sql"))
-    for sql_file in files:
-        prefix = int(sql_file.name.split("_", 1)[0])
-        if prefix <= up_to:
-            sql = sql_file.read_text(encoding="utf-8")
-            with conn.cursor() as cur:
-                cur.execute(sql)
-            if prefix == 1 and up_to >= 2:
-                with conn.cursor() as cur:
-                    cur.execute("SELECT to_regclass('public.products')")
-                    row = cur.fetchone()
-                    exists = (row["to_regclass"] if isinstance(row, dict) else row[0]) if row else None
-                if not exists:
-                    base_sql = (ROOT_DIR / "db" / "bootstrap" / "001_base.sql").read_text(encoding="utf-8")
-                    with conn.cursor() as cur:
-                        cur.execute(base_sql)
+def apply_migrations(conn: psycopg.Connection) -> None:
+    for sql_file in sorted(MIGRATIONS_DIR.glob("*.sql")):
+        sql = sql_file.read_text(encoding="utf-8")
+        with conn.cursor() as cur:
+            cur.execute(sql)
     conn.commit()
 
 
@@ -111,15 +99,14 @@ def load_csv_data(conn: psycopg.Connection) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description="Migrate and seed Tiendita PostgreSQL database")
-    parser.add_argument("--up-to", type=int, default=2, help="Max migration number to apply")
     parser.add_argument("--seed", action="store_true", help="Load CSV data after migrating")
     args = parser.parse_args()
 
     with psycopg.connect(get_direct_url()) as conn:
-        apply_migrations(conn, up_to=args.up_to)
+        apply_migrations(conn)
         if args.seed:
             load_csv_data(conn)
-    print(f"Migrations up to {args.up_to:03d} applied (seed={args.seed}).")
+    print(f"Migrations applied (seed={args.seed}).")
 
 
 if __name__ == "__main__":

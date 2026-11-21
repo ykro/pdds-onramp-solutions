@@ -27,7 +27,6 @@ def verify_jwt_token(
     audience: str | None = None,
 ) -> dict[str, Any]:
     """Verify JWT signature, expiration, issuer, and audience against JWKS."""
-    # SOLUTION_START
     client = get_jwk_client(jwks_url)
     signing_key = client.get_signing_key_from_jwt(token)
     decode_kwargs: dict[str, Any] = {
@@ -43,9 +42,6 @@ def verify_jwt_token(
 
     payload = jwt.decode(token, signing_key.key, **decode_kwargs)
     return dict(payload)
-    # SOLUTION_REPLACE
-    # raise NotImplementedError("TODO: verifica la firma, exp, iss y aud del JWT contra JWKS")
-    # SOLUTION_END
 
 
 def get_current_user_id(

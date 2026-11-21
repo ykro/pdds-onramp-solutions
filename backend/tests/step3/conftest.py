@@ -20,11 +20,9 @@ def seeded_db() -> Any:
         pytest.skip("PostgreSQL DATABASE_URL not available")
     with psycopg.connect(DB_URL, row_factory=dict_row, autocommit=True) as admin_conn:
         with admin_conn.cursor() as cur:
-            cur.execute(
-                "DROP TABLE IF EXISTS idempotency_keys, admins, order_items, orders, products CASCADE"
-            )
+            cur.execute("DROP TABLE IF EXISTS order_items, orders, products CASCADE")
 
     with psycopg.connect(DB_URL, row_factory=dict_row) as conn:
-        apply_migrations(conn, up_to=1)
+        apply_migrations(conn)
         load_csv_data(conn)
         yield conn

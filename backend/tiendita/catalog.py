@@ -1,4 +1,4 @@
-"""Catalog CSV loader and product name search (includes the Step 2 debugging exercise)."""
+"""Catalog CSV loader and product name search."""
 
 from __future__ import annotations
 
@@ -76,12 +76,7 @@ def _normalize_text(value: str) -> str:
 
 def search_by_name(products: list[ProductRecord], query: str) -> list[ProductRecord]:
     """Find products matching query ignoring case, accents, and extra whitespace."""
-    # SOLUTION_START
     needle = _normalize_text(query)
     if not needle:
         return []
     return [p for p in products if needle in _normalize_text(p.name)]
-    # SOLUTION_REPLACE
-    # # BUG: falla con mayúsculas, tildes o espacios extra (usa breakpoint() para investigarlo)
-    # return [p for p in products if query in p.name]
-    # SOLUTION_END

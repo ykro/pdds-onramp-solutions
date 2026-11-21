@@ -12,14 +12,3 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-
-  api:
-    build: .
-    ports:
-      - "8000:8000"
-    environment:
-      DATABASE_URL: postgresql://postgres:postgres@db:5432/tiendita
-      ALLOWED_ORIGINS: http://localhost:5173
-    depends_on:
-      db:
-        condition: service_healthy

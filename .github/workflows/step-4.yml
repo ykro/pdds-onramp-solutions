@@ -1,4 +1,4 @@
-name: Step 4 - API en capas
+name: Step 4 - Arquitectura y API
 
 on:
   push:
@@ -7,26 +7,10 @@ on:
 jobs:
   step-4:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:16-alpine
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: tiendita
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 5s
-          --health-timeout 3s
-          --health-retries 10
-    env:
-      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/tiendita
     steps:
       - uses: actions/checkout@v4
       - uses: astral-sh/setup-uv@v5
         with:
           python-version: "3.12"
       - run: uv sync --frozen
-      - run: uv run pytest backend/tests/step4 -m "not extra and not prod" -v
+      - run: uv run pytest backend/tests/step4 -v

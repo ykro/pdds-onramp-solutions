@@ -2,32 +2,40 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+## Antes de empezar
+
+1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
+2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos? (Pista, ejecuta `make bench` y lee `backend/tiendita/search.py`.)
+3. ¿Qué ventaja da escribir pruebas automatizadas sobre casos borde de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
+
 ## Por qué importa
 
-El dinero calculado con punto flotante acumula errores de redondeo que arruinan facturas y cierres de caja. Modelar precios en centavos enteros, elegir estructuras eficientes como enseña [Runestone Python DS](https://runestone.academy/ns/books/published/pythonds3/index.html) junto con *Grokking Algorithms* (Bhargava), y blindar cada regla con pruebas automatizadas garantiza resultados exactos antes de tocar una base de datos.
+Los bugs más caros en producción suelen vivir en reglas de negocio pequeñas y en estructuras de datos mal elegidas para el tamaño real del sistema. Comprender complejidad algorítmica como explican [Problem Solving with Algorithms and Data Structures using Python](https://runestone.academy/ns/books/published/pythonds3/index.html) y *Grokking Algorithms* (Bhargava) te ayuda a evaluar decisiones de rendimiento con datos medidos. A la vez, mantener módulos simples como plantea *A Philosophy of Software Design* (Ousterhout) y validarlos con [pytest](https://docs.pytest.org/) permite cambiar reglas sin romper cálculos existentes.
 
-## Qué se construye
+## Qué vas a hacer
 
-**Núcleo**
-- `pricing.py` en Python puro con centavos en `int`, `round_half_up_percent` y `calculate_order_total` con cupones y tope, siguiendo *A Philosophy of Software Design* (Ousterhout).
-- `order_status.py` y tus pruebas en `backend/tests/step2/test_student_order_status.py` con [pytest](https://docs.pytest.org/) bajo el enfoque de [Test-Driven Development with Python](https://www.obeythetestinggoat.com/) para detectar tres versiones con bugs plantados.
-- `search.py` comparando búsqueda lineal, binaria y por diccionario mediante `make bench`, más hacer debugging del bug de tildes y espacios en `catalog.py` (`search_by_name`).
-
-**Extendido**
-- `categories.py` para recorrer un árbol recursivo de categorías y `fulfillment.py` con una cola FIFO sobre `collections.deque`.
-
-![Estados de un pedido](diagrams/order-states.svg)
+- **Leer**. Corre `make bench` y lee `scripts/bench_search.py` junto con `backend/tiendita/search.py` para observar cómo escala una búsqueda lineal frente a un diccionario al pasar de 1,000 a 100,000 productos.
+- **Debuguear**. Corrige dos bugs en código existente, primero en `backend/tiendita/pricing.py` (donde se usa `float` y se omite el tope `max_discount_cents`) y después en `backend/tiendita/catalog.py` (donde `search_by_name` falla ante tildes, mayúsculas y espacios repetidos).
+- **Escribir**. Agrega al menos tres pruebas reales en `backend/tests/step2/test_student_pricing.py` para cubrir redondeo half-up, tope de cupón y `OutOfStockError`.
 
 ## Criterios de aceptación
 
-- `CA-2.1` [auto, núcleo] `pricing.py` opera en centavos `int`, aplica `round_half_up_percent`, calcula cupones con tope en `calculate_order_total` y lanza `OutOfStockError` si falta inventario.
-- `CA-2.2` [auto, núcleo] `order_status.py` valida las transiciones permitidas de un pedido y rechaza las inválidas con `InvalidTransitionError`.
-- `CA-2.3` [auto, núcleo] `backend/tests/step2/test_student_order_status.py` detecta con `AssertionError` las tres versiones con bugs plantados en la máquina de estados.
-- `CA-2.4` [auto, núcleo] `search.py` implementa búsqueda lineal `O(n)`, binaria `O(log n)` y por diccionario `O(1)` respetando sus cotas de operaciones y `make bench`.
-- `CA-2.5` [auto, núcleo] `catalog.py` carga las 40 filas válidas y 5 inválidas de `data/products.csv` y corrige el bug de tildes, mayúsculas y espacios en `search_by_name`.
-- `CA-2.6` [auto, extendido] `categories.py` cuenta los productos de un árbol de categorías con `count_products_in_tree` de forma recursiva.
-- `CA-2.7` [auto, extendido] `fulfillment.py` despacha pedidos en orden FIFO mediante `FulfillmentQueue` con `deque`.
+- `CA-2.1` `backend/tiendita/pricing.py` calcula centavos exactos con `int`, aplica redondeo half-up, respeta `max_discount_cents` y lanza `OutOfStockError` cuando falta inventario.
+- `CA-2.2` `backend/tiendita/catalog.py` carga `data/products.csv` y encuentra `"  pantalón   chino "` mediante `search_by_name`.
+- `CA-2.3` `backend/tests/step2/test_student_pricing.py` contiene al menos tres funciones de prueba reales que pasan en `pytest`.
+
+## Al terminar
+
+1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
+2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos? (Pista, ejecuta `make bench` y lee `backend/tiendita/search.py`.)
+3. ¿Qué ventaja da escribir pruebas automatizadas sobre casos borde de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
 
 ## Cómo verificar
 
-Corre el núcleo con `make check STEP=2`, las pruebas extendidas con `make check STEP=2 EXTRA=1` y la medición de búsquedas con `make bench`. Ejecuta la autoevaluación formativa con `make self-check STEP=2`. Consulta [example/discount_example.py](example/discount_example.py) o empieza por la [primera pista](hints/1.md).
+Ejecuta `make check STEP=2` para validar los tres criterios y corre `make bench` para medir las búsquedas. Si necesitas una referencia rápida, revisa [example/discount_example.py](example/discount_example.py) o abre la [primera pista](hints/1.md).
+
+## Respuestas de autoevaluación
+
+1. El estándar binario IEEE 754 representa fracciones decimales como `0.1` con aproximaciones, y esas diferencias se acumulan en descuentos, impuestos y sumas de carrito. Operar en centavos enteros (`int`) con redondeo explícito mantiene exactitud total en cada transacción.
+2. En una búsqueda lineal (`O(n)`), multiplicar por 100 el catálogo multiplica cerca de 100 veces el número de comparaciones. En un diccionario (`O(1)`), el tiempo de búsqueda permanece casi constante aunque el catálogo tenga cien veces más productos.
+3. Probar funciones puras en aislamiento corre en milisegundos, reproduce casos límite exactos (como redondeos en `.5`, topes de cupón y falta de stock) y detecta regresiones de inmediato sin depender de red ni contenedores.

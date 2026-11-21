@@ -35,11 +35,16 @@ def test_ca_5_3_production_deployment() -> None:
     data = json.loads(DEPLOY_JSON.read_text(encoding="utf-8"))
     app_url = (data.get("app_url") or "").strip().rstrip("/")
     assert app_url.startswith("https://"), (
-        "CA-5.3: Agrega tu URL pública de Vercel en deploy.json (ejemplo: {\"app_url\": \"https://tu-app.vercel.app\"})."
+        'CA-5.3: Agrega tu URL pública de Vercel en deploy.json ({"app_url": "https://tu-app.vercel.app"}).'
     )
 
     health = _get_with_retries(f"{app_url}/api/health")
     assert health.status_code == 200, f"CA-5.3: /api/health devolvió {health.status_code}."
+
+    products = _get_with_retries(f"{app_url}/api/products")
+    assert products.status_code == 200 and len(products.json()) >= 1, (
+        f"CA-5.3: /api/products debe devolver productos desde Neon (status={products.status_code})."
+    )
 
     protected = _get_with_retries(f"{app_url}/api/orders/mine")
     assert protected.status_code == 401, (

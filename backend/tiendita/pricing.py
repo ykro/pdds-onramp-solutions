@@ -35,16 +35,11 @@ def round_half_up_percent(amount_cents: int, percent: int) -> int:
     """Compute round_half_up(amount_cents * percent / 100) using integer arithmetic only."""
     if amount_cents < 0 or percent < 0:
         raise ValueError("amount_cents and percent must be non-negative")
-    # SOLUTION_START
     return (amount_cents * percent + 50) // 100
-    # SOLUTION_REPLACE
-    # raise NotImplementedError("TODO: implementa round_half_up_percent en pricing.py")
-    # SOLUTION_END
 
 
 def calculate_order_total(items: list[CartItem], coupon: Coupon | None = None) -> int:
     """Validate stock and return total in integer cents after optional coupon."""
-    # SOLUTION_START
     subtotal = 0
     for item in items:
         if item.quantity <= 0:
@@ -66,6 +61,3 @@ def calculate_order_total(items: list[CartItem], coupon: Coupon | None = None) -
             discount = min(discount, coupon.max_discount_cents)
 
     return max(0, subtotal - discount)
-    # SOLUTION_REPLACE
-    # raise NotImplementedError("TODO: implementa calculate_order_total en pricing.py")
-    # SOLUTION_END

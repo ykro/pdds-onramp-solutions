@@ -1,4 +1,4 @@
-name: Step 2 - Reglas y algoritmos
+name: Step 2 - Lógica y testing
 
 on:
   push:
@@ -14,4 +14,4 @@ jobs:
           python-version: "3.12"
       - run: uv sync --frozen
       - run: uv run ruff check backend/tiendita
-      - run: uv run pytest backend/tests/step2 -m "not extra and not prod" -v
+      - run: uv run pytest backend/tests/step2 -v

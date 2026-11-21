@@ -1,6 +1,5 @@
 # Historia 001. Consultar historial de pedidos propios
 
-<!-- SOLUTION_START -->
 ## Historia de usuario
 
 Como cliente de Tiendita, quiero consultar el historial de mis pedidos desde la aplicación para verificar su estado y el total pagado sin pedir ayuda manual.
@@ -15,12 +14,3 @@ Como cliente de Tiendita, quiero consultar el historial de mis pedidos desde la 
 
 - Cancelación o reembolso de pedidos confirmados.
 - Descarga de facturas en PDF.
-<!-- SOLUTION_REPLACE -->
-## Historia de usuario
-
-TODO. Escribe aquí la historia con formato Como / Quiero / Para.
-
-## Criterios de aceptación
-
-1. TODO. Agrega al menos dos criterios con formato Dado / Cuando / Entonces.
-<!-- SOLUTION_END -->

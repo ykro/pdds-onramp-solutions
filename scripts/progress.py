@@ -9,11 +9,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 
 STEPS = [
-    (1, "Terminal y Git", ["uv", "run", "pytest", "backend/tests/step1", "-m", "not extra and not prod", "-q"]),
-    (2, "Reglas y algoritmos", ["uv", "run", "pytest", "backend/tests/step2", "-m", "not extra and not prod", "-q"]),
-    (3, "Datos en SQL", ["uv", "run", "pytest", "backend/tests/step3", "-m", "not extra and not prod", "-q"]),
-    (4, "API en capas", ["uv", "run", "pytest", "backend/tests/step4", "-m", "not extra and not prod", "-q"]),
-    (5, "React y deploy", ["npm", "--prefix", "frontend", "test", "--", "--run"]),
+    (1, "Flujo de trabajo, logs y code review", ["uv", "run", "pytest", "backend/tests/step1", "-q"]),
+    (2, "Lógica, estructuras de datos y testing", ["uv", "run", "pytest", "backend/tests/step2", "-q"]),
+    (3, "Base de datos relacional y SQL", ["uv", "run", "pytest", "backend/tests/step3", "-q"]),
+    (4, "Arquitectura por capas, API y auth", ["uv", "run", "pytest", "backend/tests/step4", "-q"]),
+    (5, "Frontend conectado y deploy", ["npm", "--prefix", "frontend", "test", "--", "--run"]),
 ]
 
 
