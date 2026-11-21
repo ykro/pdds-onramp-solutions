@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Máquina de estados de órdenes</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper:       #F7F6F2;
+      --paper-2:     #EFECE6;
+      --ink:         #0F2547;
+      --muted:       #3B5B8C;
+      --soft:        #5C769E;
+      --rule:        rgba(15,37,71,0.12);
+      --rule-solid:  #B8C4D6;
+      --accent:      #C59216;
+      --accent-tint: rgba(197,146,22,0.10);
+      --link:        #2E5AA8;
+      --font-sans:   'Geist', system-ui, sans-serif;
+      --font-serif:  'Instrument Serif', Georgia, serif;
+      --font-mono:   'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 960px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">MÁQUINA DE ESTADOS · PASO 2 · REGLAS DE NEGOCIO</p>
+    <h1>Ciclo de vida y transiciones válidas de una orden</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 460" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="step2-order-states-title step2-order-states-desc">
+        <title id="step2-order-states-title">Máquina de estados de órdenes</title>
+        <desc id="step2-order-states-desc">Máquina de estados de una orden en Tiendita con el flujo principal pending, paid, shipped y delivered, y cancelación permitida únicamente desde pending o paid.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3B5B8C"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C59216"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2E5AA8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#F7F6F2"/>
+        <line x1="58" y1="136" x2="92" y2="136" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <line x1="248" y1="136" x2="320" y2="136" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <rect x="262" y="116" width="44" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="284" y="125" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">PAY()</text>
+        <line x1="476" y1="136" x2="548" y2="136" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <rect x="486" y="116" width="52" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="512" y="125" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">SHIP()</text>
+        <line x1="704" y1="136" x2="776" y2="136" stroke="#C59216" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <rect x="706" y="116" width="68" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="740" y="125" fill="#C59216" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">DELIVER()</text>
+        <line x1="852" y1="172" x2="852" y2="208" stroke="#C59216" stroke-width="1.3" marker-end="url(#arrow-accent)"/>
+        <path d="M 168,172 V 292 Q 168,300 176,300 H 216" fill="none" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+        <rect x="88" y="228" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="120" y="237" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CANCEL()</text>
+        <path d="M 400,172 V 292 Q 400,300 392,300 H 380" fill="none" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#arrow)"/>
+        <rect x="416" y="228" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="448" y="237" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CANCEL()</text>
+        <line x1="296" y1="336" x2="296" y2="360" stroke="#3B5B8C" stroke-width="1.2" marker-end="url(#arrow)"/>
+        <circle cx="52" cy="136" r="6" fill="#0F2547"/>
+        <circle cx="852" cy="220" r="8" fill="none" stroke="#C59216" stroke-width="1.4"/>
+        <circle cx="852" cy="220" r="4.5" fill="#C59216"/>
+        <circle cx="296" cy="372" r="8" fill="none" stroke="#0F2547" stroke-width="1.2"/>
+        <circle cx="296" cy="372" r="4.5" fill="#0F2547"/>
+        <rect x="92" y="100" width="156" height="72" rx="8" fill="#F7F6F2"/>
+        <rect x="92" y="100" width="156" height="72" rx="8" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="100" y="106" width="61" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="130" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">INICIAL</text>
+        <text x="170" y="138" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">pending</text>
+        <text x="170" y="154" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">orden creada</text>
+        <rect x="320" y="100" width="156" height="72" rx="8" fill="#F7F6F2"/>
+        <rect x="320" y="100" width="156" height="72" rx="8" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="328" y="106" width="54" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="355" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">ACTIVA</text>
+        <text x="398" y="138" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">paid</text>
+        <text x="398" y="154" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">pago confirmado</text>
+        <rect x="548" y="100" width="156" height="72" rx="8" fill="#F7F6F2"/>
+        <rect x="548" y="100" width="156" height="72" rx="8" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="556" y="106" width="61" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="586" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">EN RUTA</text>
+        <text x="626" y="138" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">shipped</text>
+        <text x="626" y="154" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">guía emitida</text>
+        <rect x="776" y="100" width="148" height="72" rx="8" fill="#F7F6F2"/>
+        <rect x="776" y="100" width="148" height="72" rx="8" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="784" y="106" width="47" height="12" rx="2" fill="transparent" stroke="#C59216" stroke-width="0.8"/>
+        <text x="807" y="115" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FINAL</text>
+        <text x="850" y="138" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">delivered</text>
+        <text x="850" y="154" fill="#0F2547" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">entrega completa</text>
+        <rect x="216" y="264" width="164" height="72" rx="8" fill="#F7F6F2"/>
+        <rect x="216" y="264" width="164" height="72" rx="8" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="224" y="270" width="68" height="12" rx="2" fill="transparent" stroke="#C59216" stroke-width="0.8"/>
+        <text x="258" y="279" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">TERMINAL</text>
+        <text x="298" y="302" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">cancelled</text>
+        <text x="298" y="318" fill="#0F2547" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">stock restaurado</text>
+        <text x="548" y="292" fill="#3B5B8C" font-size="15" font-style="italic" font-family="'Instrument Serif', Georgia, serif">Desde shipped o delivered la orden ya no puede cancelarse.</text>
+        <text x="548" y="312" fill="#5C769E" font-size="9" font-family="'Geist Mono', monospace">ValueError: transición inválida</text>
+        <line x1="32" y1="408" x2="928" y2="408" stroke="rgba(15,37,71,0.12)" stroke-width="0.8"/>
+        <text x="32" y="424" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <rect x="120" y="415" width="16" height="12" rx="2" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.2"/>
+        <text x="144" y="424" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Estado terminal</text>
+        <rect x="276" y="415" width="16" height="12" rx="2" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <text x="300" y="424" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Estado intermedio</text>
+        <line x1="432" y1="421" x2="450" y2="421" stroke="#C59216" stroke-width="1.4"/>
+        <text x="456" y="424" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Cierre exitoso</text>
+        <line x1="588" y1="421" x2="606" y2="421" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="612" y="424" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Ruta de cancelación</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>

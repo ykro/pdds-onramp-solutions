@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 416" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="step5-deployment-title step5-deployment-desc" id="step5-deployment-root">
+        <title id="step5-deployment-title">Topología de despliegue en Vercel y Neon</title>
+        <desc id="step5-deployment-desc">Diagrama de despliegue en tres zonas que muestra al navegador conectando por HTTPS a Vercel Static para React y Vercel Python para FastAPI, y desde ahí hacia Neon Auth y Neon Postgres.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #step5-deployment-root { --paper:       #F7F6F2;
+      --paper-2:     #EFECE6;
+      --ink:         #0F2547;
+      --muted:       #3B5B8C;
+      --soft:        #5C769E;
+      --rule:        rgba(15,37,71,0.12);
+      --rule-solid:  #B8C4D6;
+      --accent:      #C59216;
+      --accent-tint: rgba(197,146,22,0.10);
+      --link:        #2E5AA8;
+      --font-sans:   'Geist', system-ui, sans-serif;
+      --font-serif:  'Instrument Serif', Georgia, serif;
+      --font-mono:   'Geist Mono', ui-monospace, monospace; }
+      #step5-deployment-root { font-family: var(--font-sans); color: var(--ink); }
+      #step5-deployment-root .diagram-container { width: 100%; overflow-x: auto; }
+      #step5-deployment-root .diagram-container { overflow-x: visible; }</style>
+          <marker id="step5-deployment-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3B5B8C"/></marker>
+          <marker id="step5-deployment-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C59216"/></marker>
+          <marker id="step5-deployment-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2E5AA8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#F7F6F2"/>
+        <rect x="28" y="36" width="208" height="296" rx="8" fill="#0f2547" fill-opacity="0.03" stroke="#0f2547" stroke-opacity="0.18" stroke-width="0.8" stroke-dasharray="4,4"/>
+        <rect x="40" y="40" width="60" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="70" y="49" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">CLIENTE</text>
+        <rect x="296" y="36" width="320" height="296" rx="8" fill="#0f2547" fill-opacity="0.03" stroke="#0f2547" stroke-opacity="0.18" stroke-width="0.8" stroke-dasharray="4,4"/>
+        <rect x="308" y="40" width="180" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="398" y="49" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">VERCEL · EDGE Y SERVERLESS</text>
+        <rect x="676" y="36" width="256" height="296" rx="8" fill="#0f2547" fill-opacity="0.03" stroke="#0f2547" stroke-opacity="0.18" stroke-width="0.8" stroke-dasharray="4,4"/>
+        <rect x="688" y="40" width="140" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="758" y="49" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.14em">NEON CLOUD · MANAGED</text>
+        <path d="M 216,156 H 256 Q 264,156 264,148 V 132 Q 264,124 272,124 H 320" fill="none" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#step5-deployment-arrow-link)"/>
+        <rect x="230" y="104" width="68" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="264" y="113" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">HTTPS:443</text>
+        <path d="M 216,196 H 256 Q 264,196 264,204 V 252 Q 264,260 272,260 H 320" fill="none" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#step5-deployment-arrow-link)"/>
+        <rect x="232" y="272" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="264" y="281" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">/API:443</text>
+        <path d="M 592,240 H 636 Q 644,240 644,232 V 132 Q 644,124 652,124 H 700" fill="none" stroke="#2E5AA8" stroke-width="1.1" stroke-dasharray="5,4" marker-end="url(#step5-deployment-arrow-link)"/>
+        <rect x="612" y="104" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="644" y="113" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">JWKS:443</text>
+        <line x1="592" y1="268" x2="700" y2="268" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#step5-deployment-arrow-link)"/>
+        <rect x="612" y="280" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="644" y="289" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">TLS:5432</text>
+        <rect x="48" y="124" width="168" height="96" rx="6" fill="#F7F6F2"/>
+        <rect x="48" y="124" width="168" height="96" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="58" y="132" width="40" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.30" stroke-width="0.8"/>
+        <text x="78" y="141" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">USER</text>
+        <text x="60" y="168" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Navegador</text>
+        <rect x="58" y="184" width="148" height="24" rx="4" fill="#0f2547" fill-opacity="0.04" stroke="#3B5B8C" stroke-width="0.8"/>
+        <text x="66" y="200" fill="#0F2547" font-size="10" font-weight="500" font-family="'Geist', sans-serif">HTTPS Client</text>
+        <text x="198" y="199" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="end">TLS 1.3</text>
+        <rect x="320" y="76" width="272" height="96" rx="6" fill="#F7F6F2"/>
+        <rect x="320" y="76" width="272" height="96" rx="6" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="330" y="84" width="33" height="12" rx="2" fill="none" stroke="#C59216" stroke-width="0.8"/>
+        <text x="346" y="93" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CDN</text>
+        <rect x="534" y="84" width="48" height="12" rx="2" fill="#F7F6F2" stroke="#C59216" stroke-width="0.8"/>
+        <text x="558" y="93" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">global</text>
+        <text x="332" y="120" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Vercel Static</text>
+        <rect x="330" y="136" width="252" height="24" rx="4" fill="#0f2547" fill-opacity="0.04" stroke="#3B5B8C" stroke-width="0.8"/>
+        <text x="338" y="152" fill="#0F2547" font-size="10" font-weight="500" font-family="'Geist', sans-serif">React SPA (/)</text>
+        <text x="574" y="151" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="end">Vite 6</text>
+        <rect x="320" y="212" width="272" height="96" rx="6" fill="#F7F6F2"/>
+        <rect x="320" y="212" width="272" height="96" rx="6" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="330" y="220" width="32" height="12" rx="2" fill="none" stroke="#C59216" stroke-width="0.8"/>
+        <text x="346" y="229" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">FN</text>
+        <rect x="546" y="220" width="36" height="12" rx="2" fill="#F7F6F2" stroke="#C59216" stroke-width="0.8"/>
+        <text x="564" y="229" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">auto</text>
+        <text x="332" y="256" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Vercel Python</text>
+        <rect x="330" y="272" width="252" height="24" rx="4" fill="#0f2547" fill-opacity="0.04" stroke="#3B5B8C" stroke-width="0.8"/>
+        <text x="338" y="288" fill="#0F2547" font-size="10" font-weight="500" font-family="'Geist', sans-serif">FastAPI (/api/*)</text>
+        <text x="574" y="287" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="end">Py 3.12</text>
+        <rect x="700" y="76" width="208" height="96" rx="6" fill="#F7F6F2"/>
+        <rect x="700" y="76" width="208" height="96" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="710" y="84" width="61" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.30" stroke-width="0.8"/>
+        <text x="740" y="93" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MANAGED</text>
+        <text x="712" y="120" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Neon Auth</text>
+        <rect x="710" y="136" width="188" height="24" rx="4" fill="#0f2547" fill-opacity="0.04" stroke="#3B5B8C" stroke-width="0.8"/>
+        <text x="718" y="152" fill="#0F2547" font-size="10" font-weight="500" font-family="'Geist', sans-serif">OIDC / JWKS</text>
+        <text x="890" y="151" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="end">v1</text>
+        <rect x="700" y="212" width="208" height="96" rx="6" fill="#F7F6F2"/>
+        <rect x="700" y="212" width="208" height="96" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="710" y="220" width="61" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.30" stroke-width="0.8"/>
+        <text x="740" y="229" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">MANAGED</text>
+        <text x="712" y="256" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif">Neon Postgres</text>
+        <rect x="710" y="272" width="188" height="24" rx="4" fill="#0f2547" fill-opacity="0.04" stroke="#3B5B8C" stroke-width="0.8"/>
+        <text x="718" y="288" fill="#0F2547" font-size="10" font-weight="500" font-family="'Geist', sans-serif">PostgreSQL</text>
+        <text x="890" y="287" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="end">v16</text>
+        <line x1="32" y1="364" x2="928" y2="364" stroke="#0f2547" stroke-opacity="0.12" stroke-width="0.8"/>
+        <text x="32" y="380" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <rect x="120" y="371" width="16" height="12" rx="2" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="1.2"/>
+        <text x="144" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Despliegue en Vercel</text>
+        <rect x="292" y="371" width="16" height="12" rx="2" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <text x="316" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Cliente o servicio Neon</text>
+        <line x1="482" y1="377" x2="500" y2="377" stroke="#2E5AA8" stroke-width="1.4"/>
+        <text x="506" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Tráfico cifrado entre zonas</text>
+        <line x1="696" y1="377" x2="714" y2="377" stroke="#2E5AA8" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="720" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Verificación JWKS en caché</text>
+      </svg>

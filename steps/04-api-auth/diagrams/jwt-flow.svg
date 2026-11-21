@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg viewBox="0 0 960 584" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="step4-jwt-flow-title step4-jwt-flow-desc" id="step4-jwt-flow-root">
+        <title id="step4-jwt-flow-title">Flujo de autenticación JWT y JWKS</title>
+        <desc id="step4-jwt-flow-desc">Secuencia de autenticación entre Cliente, proveedor Auth/JWKS, FastAPI con PyJWT y el Servicio que valida user_id, con bifurcación ALT entre respuesta 200 y rechazo 401.</desc>
+        <defs>
+      <style>@import url('https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&amp;family=Geist:wght@400;500;600&amp;family=Geist+Mono:wght@400;500;600&amp;family=Noto+Serif:ital@0;1&amp;family=Noto+Sans+KR:wght@400;500;600&amp;family=Noto+Serif+KR:wght@400&amp;family=Noto+Sans+TC:wght@400;500;600&amp;family=Noto+Serif+TC:wght@400&amp;display=swap');
+      #step4-jwt-flow-root { --paper:       #F7F6F2;
+      --paper-2:     #EFECE6;
+      --ink:         #0F2547;
+      --muted:       #3B5B8C;
+      --soft:        #5C769E;
+      --rule:        rgba(15,37,71,0.12);
+      --rule-solid:  #B8C4D6;
+      --accent:      #C59216;
+      --accent-tint: rgba(197,146,22,0.10);
+      --link:        #2E5AA8;
+      --font-sans:   'Geist', system-ui, sans-serif;
+      --font-serif:  'Instrument Serif', Georgia, serif;
+      --font-mono:   'Geist Mono', ui-monospace, monospace; }
+      #step4-jwt-flow-root { font-family: var(--font-sans); color: var(--ink); }
+      #step4-jwt-flow-root .diagram-container { width: 100%; overflow-x: auto; }
+      #step4-jwt-flow-root .diagram-container { overflow-x: visible; }</style>
+          <marker id="step4-jwt-flow-arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3B5B8C"/></marker>
+          <marker id="step4-jwt-flow-arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C59216"/></marker>
+          <marker id="step4-jwt-flow-arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2E5AA8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#F7F6F2"/>
+        <rect x="92" y="316" width="756" height="184" rx="4" fill="#0f2547" fill-opacity="0.02" stroke="#0f2547" stroke-opacity="0.22" stroke-width="1"/>
+        <rect x="92" y="316" width="44" height="16" rx="2" fill="#F7F6F2" stroke="#0f2547" stroke-opacity="0.22" stroke-width="1"/>
+        <text x="114" y="328" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.12em">ALT</text>
+        <text x="148" y="328" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace">[firma válida y token vigente]</text>
+        <line x1="100" y1="432" x2="840" y2="432" stroke="#0f2547" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="4,3"/>
+        <text x="108" y="452" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace">[firma inválida, expirado o sin token]</text>
+        <line x1="120" y1="96" x2="120" y2="508" stroke="#0f2547" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="344" y1="96" x2="344" y2="508" stroke="#0f2547" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="576" y1="96" x2="576" y2="508" stroke="#0f2547" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="3,3"/>
+        <line x1="816" y1="96" x2="816" y2="508" stroke="#0f2547" stroke-opacity="0.20" stroke-width="1" stroke-dasharray="3,3"/>
+        <rect x="572" y="212" width="8" height="272" fill="#0f2547" fill-opacity="0.06" stroke="#3B5B8C" stroke-width="0.8"/>
+        <rect x="812" y="368" width="8" height="44" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="0.8"/>
+        <line x1="124" y1="132" x2="340" y2="132" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#step4-jwt-flow-arrow-link)"/>
+        <rect x="210" y="112" width="44" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="232" y="121" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">LOGIN</text>
+        <line x1="340" y1="168" x2="124" y2="168" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#step4-jwt-flow-arrow)"/>
+        <rect x="192" y="148" width="80" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="232" y="157" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">JWT FIRMADO</text>
+        <line x1="124" y1="212" x2="572" y2="212" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#step4-jwt-flow-arrow-link)"/>
+        <rect x="416" y="192" width="88" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="460" y="201" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REQ + BEARER</text>
+        <line x1="572" y1="252" x2="348" y2="252" stroke="#2E5AA8" stroke-width="1.1" stroke-dasharray="5,4" marker-end="url(#step4-jwt-flow-arrow-link)"/>
+        <rect x="428" y="232" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="460" y="241" fill="#2E5AA8" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">GET JWKS</text>
+        <line x1="348" y1="288" x2="572" y2="288" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#step4-jwt-flow-arrow)"/>
+        <rect x="414" y="268" width="92" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="460" y="277" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CLAVE PÚBLICA</text>
+        <line x1="580" y1="368" x2="812" y2="368" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#step4-jwt-flow-arrow)"/>
+        <rect x="650" y="348" width="92" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="696" y="357" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">USER_ID + REQ</text>
+        <line x1="812" y1="412" x2="124" y2="412" stroke="#C59216" stroke-width="1.5" marker-end="url(#step4-jwt-flow-arrow-accent)"/>
+        <rect x="434" y="392" width="52" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="460" y="401" fill="#C59216" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">200 OK</text>
+        <line x1="572" y1="480" x2="124" y2="480" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#step4-jwt-flow-arrow)"/>
+        <rect x="422" y="460" width="76" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="460" y="469" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">401 UNAUTH</text>
+        <rect x="48" y="36" width="144" height="60" rx="6" fill="#F7F6F2"/>
+        <rect x="48" y="36" width="144" height="60" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="56" y="42" width="33" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
+        <text x="72" y="51" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">APP</text>
+        <text x="120" y="68" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Cliente</text>
+        <text x="120" y="84" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Bearer token</text>
+        <rect x="264" y="36" width="160" height="60" rx="6" fill="#F7F6F2"/>
+        <rect x="264" y="36" width="160" height="60" rx="6" fill="#EFECE6" stroke="#2E5AA8" stroke-width="1"/>
+        <rect x="272" y="42" width="33" height="12" rx="2" fill="none" stroke="#2e5aa8" stroke-opacity="0.45" stroke-width="0.8"/>
+        <text x="288" y="51" fill="#2E5AA8" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">IDP</text>
+        <text x="344" y="68" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Auth / JWKS</text>
+        <text x="344" y="84" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">Neon Auth</text>
+        <rect x="496" y="36" width="160" height="60" rx="6" fill="#F7F6F2"/>
+        <rect x="496" y="36" width="160" height="60" rx="6" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="504" y="42" width="33" height="12" rx="2" fill="none" stroke="#C59216" stroke-width="0.8"/>
+        <text x="520" y="51" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">API</text>
+        <text x="576" y="68" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">FastAPI</text>
+        <text x="576" y="84" fill="#0F2547" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">PyJWT</text>
+        <rect x="736" y="36" width="160" height="60" rx="6" fill="#F7F6F2"/>
+        <rect x="736" y="36" width="160" height="60" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="744" y="42" width="40" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
+        <text x="764" y="51" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">CORE</text>
+        <text x="816" y="68" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Servicio</text>
+        <text x="816" y="84" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">verifica user_id</text>
+        <line x1="32" y1="532" x2="928" y2="532" stroke="#0f2547" stroke-opacity="0.12" stroke-width="0.8"/>
+        <text x="32" y="548" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <line x1="120" y1="545" x2="138" y2="545" stroke="#C59216" stroke-width="1.4"/>
+        <text x="144" y="548" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Respuesta autorizada (200)</text>
+        <line x1="328" y1="545" x2="346" y2="545" stroke="#2E5AA8" stroke-width="1.4"/>
+        <text x="352" y="548" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Llamada HTTP / JWKS</text>
+        <line x1="494" y1="545" x2="512" y2="545" stroke="#3B5B8C" stroke-width="1.2" stroke-dasharray="4,3"/>
+        <text x="518" y="548" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Retorno o rechazo (401)</text>
+        <rect x="684" y="539" width="16" height="12" rx="2" fill="#c59216" fill-opacity="0.10" stroke="#C59216" stroke-width="1.2"/>
+        <text x="708" y="548" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Punto de verificación</text>
+      </svg>

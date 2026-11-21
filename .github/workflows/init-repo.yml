@@ -1,0 +1,74 @@
+name: Initialize Repo
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Update README badges to this repository
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          import os
+          repo = os.environ["GITHUB_REPOSITORY"]
+          readme = Path("README.md")
+          text = readme.read_text(encoding="utf-8")
+          updated = text.replace("ykro/pdds-onramp", repo)
+          if updated != text:
+              readme.write_text(updated, encoding="utf-8")
+          PY
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet README.md; then
+            git add README.md
+            git commit -m "chore: update badges for ${{ github.repository }}"
+            git push
+          fi
+
+      - name: Create backlog issues (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          existing=$(gh issue list --state all --limit 50 --json title --jq '.[].title')
+          create_if_missing() {
+            local title="$1"
+            local body="$2"
+            if ! printf '%s\n' "$existing" | grep -Fxq "$title"; then
+              gh issue create --title "$title" --body "$body"
+            fi
+          }
+          create_if_missing "Paso 1: Terminal, Git y leer errores" "Ver steps/01-terminal-git/README.md y criterios CA-1.1 a CA-1.5."
+          create_if_missing "Paso 2: Reglas de negocio, algoritmos y debugging" "Ver steps/02-rules-algorithms/README.md y criterios CA-2.1 a CA-2.7. Incluye el bug reportado en catalog.py."
+          create_if_missing "Paso 3: Datos en SQL y code review" "Ver steps/03-sql/README.md y criterios CA-3.1 a CA-3.7."
+          create_if_missing "Paso 4: Un API en capas con autenticación" "Ver steps/04-api-auth/README.md y criterios CA-4.1 a CA-4.8."
+          create_if_missing "Paso 5: React, Neon Auth y deploy" "Ver steps/05-react-deploy/README.md y criterios CA-5.1 a CA-5.4."
+
+      - name: Open Step 3 code review PR (idempotent)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="review/step-3-orders-by-sku"
+          if ! git ls-remote --exit-code --heads origin "$branch" >/dev/null 2>&1; then
+            git checkout -b "$branch"
+            cp steps/03-sql/buggy_snapshot.py backend/tiendita/repositories/sku_lookup_draft.py
+            git add backend/tiendita/repositories/sku_lookup_draft.py
+            git commit -m "feat: add orders lookup by SKU"
+            git push -u origin "$branch"
+          fi
+          if [ -z "$(gh pr list --head "$branch" --state all --json number --jq '.[].number')" ]; then
+            gh pr create \
+              --head "$branch" \
+              --title "feat: buscar pedidos por SKU (PR para revisar en Paso 3)" \
+              --body "Este PR es parte del Paso 3 (CA-3.4 y CA-3.5). Revisa el código usando examples/code-review.md, deja comentarios y corrige las dos fallas en backend/tiendita/repositories/orders_repo.py."
+          fi

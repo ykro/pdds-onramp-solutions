@@ -1,0 +1,46 @@
+sku,name,category,price_cents,stock
+SKU-001,Camisa Oxford,ropa/hombre/camisas,18500,1
+SKU-002,Camisa Lino,ropa/hombre/camisas,22000,2
+SKU-003,Pantalon Chino,ropa/hombre/pantalones,27500,3
+SKU-004,Jean Clasico,ropa/hombre/pantalones,31000,4
+SKU-005,Blusa Algodon,ropa/mujer/blusas,16500,5
+SKU-006,Blusa Seda,ropa/mujer/blusas,24000,8
+SKU-007,Vestido Verano,ropa/mujer/vestidos,34500,60
+SKU-008,Vestido Midi,ropa/mujer/vestidos,39000,25
+SKU-009,Tenis Runner,calzado/deportivo,48000,8
+SKU-010,Tenis Trail,calzado/deportivo,56000,2
+SKU-011,Mocasin Cuero,calzado/casual,42000,15
+SKU-012,Bota Urbana,calzado/casual,51000,40
+SKU-013,Taza Ceramica,hogar/cocina,6500,40
+SKU-014,Termo Acero,hogar/cocina,14500,8
+SKU-015,Prensa Francesa,hogar/cocina,19500,25
+SKU-016,Lampara Escritorio,hogar/oficina,21000,25
+SKU-017,Libreta Puntos,hogar/oficina,5500,2
+SKU-018,Organizador Bambu,hogar/oficina,12000,40
+SKU-019,Audifonos Bluetooth,electronica/audio,32000,40
+SKU-020,Bocina Portatil,electronica/audio,28500,40
+SKU-021,Camisa Oxford Edicion Especial,ropa/hombre/camisas,21000,25
+SKU-022,Camisa Lino Edicion Especial,ropa/hombre/camisas,24500,8
+SKU-023,Pantalon Chino Edicion Especial,ropa/hombre/pantalones,30000,8
+SKU-024,Jean Clasico Edicion Especial,ropa/hombre/pantalones,33500,60
+SKU-025,Blusa Algodon Edicion Especial,ropa/mujer/blusas,19000,60
+SKU-026,Blusa Seda Edicion Especial,ropa/mujer/blusas,26500,15
+SKU-027,Vestido Verano Edicion Especial,ropa/mujer/vestidos,37000,40
+SKU-028,Vestido Midi Edicion Especial,ropa/mujer/vestidos,41500,8
+SKU-029,Tenis Runner Edicion Especial,calzado/deportivo,50500,8
+SKU-030,Tenis Trail Edicion Especial,calzado/deportivo,58500,15
+SKU-031,Mocasin Cuero Edicion Especial,calzado/casual,44500,8
+SKU-032,Bota Urbana Edicion Especial,calzado/casual,53500,60
+SKU-033,Taza Ceramica Edicion Especial,hogar/cocina,9000,8
+SKU-034,Termo Acero Edicion Especial,hogar/cocina,17000,4
+SKU-035,Prensa Francesa Edicion Especial,hogar/cocina,22000,4
+SKU-036,Lampara Escritorio Edicion Especial,hogar/oficina,23500,60
+SKU-037,Libreta Puntos Edicion Especial,hogar/oficina,8000,25
+SKU-038,Organizador Bambu Edicion Especial,hogar/oficina,14500,2
+SKU-039,Audifonos Bluetooth Edicion Especial,electronica/audio,34500,2
+SKU-040,Bocina Portatil Edicion Especial,electronica/audio,31000,8
+,Producto sin SKU,hogar/cocina,1000,5
+SKU-BAD-1,,hogar/cocina,1000,5
+SKU-BAD-2,Precio Negativo,hogar/cocina,-500,5
+SKU-BAD-3,Stock Negativo,hogar/cocina,1500,-3
+SKU-BAD-4,Precio Texto,hogar/cocina,gratis,2

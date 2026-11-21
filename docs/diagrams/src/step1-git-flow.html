@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flujo de trabajo en Git con CI</title>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --paper:       #F7F6F2;
+      --paper-2:     #EFECE6;
+      --ink:         #0F2547;
+      --muted:       #3B5B8C;
+      --soft:        #5C769E;
+      --rule:        rgba(15,37,71,0.12);
+      --rule-solid:  #B8C4D6;
+      --accent:      #C59216;
+      --accent-tint: rgba(197,146,22,0.10);
+      --link:        #2E5AA8;
+      --font-sans:   'Geist', system-ui, sans-serif;
+      --font-serif:  'Instrument Serif', Georgia, serif;
+      --font-mono:   'Geist Mono', ui-monospace, monospace;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--paper);
+      color: var(--ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 2rem;
+    }
+    .frame { max-width: 1200px; width: 100%; }
+    .diagram-container { width: 100%; overflow-x: auto; }
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.66rem;
+      font-weight: 500;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 0.5rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 2.4vw + 0.75rem, 2rem);
+      font-weight: 400;
+      letter-spacing: -0.02em;
+      line-height: 1.15;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+    svg { width: 100%; min-width: 960px; display: block; }
+    @media print {
+      .diagram-container { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="frame">
+    <p class="eyebrow">PROCESO · PASO 1 · TERMINAL Y GIT</p>
+    <h1>Flujo de trabajo en Git con integración continua</h1>
+    <div class="diagram-container">
+      <svg viewBox="0 0 960 416" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="step1-git-flow-title step1-git-flow-desc">
+        <title id="step1-git-flow-title">Flujo de trabajo en Git con CI</title>
+        <desc id="step1-git-flow-desc">Proceso secuencial de siete pasos desde la creación de una rama y commits locales hasta push, verificación en CI, Pull Request, revisión y merge a main.</desc>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3B5B8C"/></marker>
+          <marker id="arrow-accent" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#C59216"/></marker>
+          <marker id="arrow-link" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2E5AA8"/></marker>
+        </defs>
+        <rect width="100%" height="100%" fill="#F7F6F2"/>
+        <text x="48" y="44" fill="#5C769E" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">FASE 1 · TRABAJO LOCAL Y VALIDACIÓN AUTOMÁTICA</text>
+        <text x="48" y="220" fill="#5C769E" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">FASE 2 · REVISIÓN E INTEGRACIÓN A MAIN</text>
+        <line x1="232" y1="108" x2="276" y2="108" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <line x1="460" y1="108" x2="504" y2="108" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <line x1="688" y1="108" x2="732" y2="108" stroke="#2E5AA8" stroke-width="1.3" marker-end="url(#arrow-link)"/>
+        <line x1="824" y1="148" x2="824" y2="244" stroke="#C59216" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <rect x="844" y="190" width="64" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="876" y="199" fill="#C59216" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">CI VERDE</text>
+        <line x1="732" y1="284" x2="644" y2="284" stroke="#3B5B8C" stroke-width="1.3" marker-end="url(#arrow)"/>
+        <rect x="662" y="264" width="52" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="688" y="273" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">REVISA</text>
+        <line x1="436" y1="284" x2="348" y2="284" stroke="#C59216" stroke-width="1.4" marker-end="url(#arrow-accent)"/>
+        <rect x="364" y="264" width="56" height="12" rx="2" fill="#F7F6F2"/>
+        <text x="392" y="273" fill="#C59216" font-size="8" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.06em">APRUEBA</text>
+        <rect x="48" y="68" width="184" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="48" y="68" width="184" height="80" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="56" y="74" width="28" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="70" y="83" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">01</text>
+        <text x="140" y="110" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Rama</text>
+        <text x="140" y="126" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">git switch -c feat/...</text>
+        <rect x="276" y="68" width="184" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="276" y="68" width="184" height="80" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="284" y="74" width="28" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="298" y="83" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">02</text>
+        <text x="368" y="110" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Commit</text>
+        <text x="368" y="126" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">cambios atómicos</text>
+        <rect x="504" y="68" width="184" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="504" y="68" width="184" height="80" rx="6" fill="#EFECE6" stroke="#2E5AA8" stroke-width="1"/>
+        <rect x="512" y="74" width="28" height="12" rx="2" fill="transparent" stroke="rgba(46,90,168,0.45)" stroke-width="0.8"/>
+        <text x="526" y="83" fill="#2E5AA8" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">03</text>
+        <text x="596" y="110" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Push</text>
+        <text x="596" y="126" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">git push -u origin</text>
+        <rect x="732" y="68" width="184" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="732" y="68" width="184" height="80" rx="6" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="740" y="74" width="61" height="12" rx="2" fill="transparent" stroke="#C59216" stroke-width="0.8"/>
+        <text x="770" y="83" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">04 · CI</text>
+        <text x="824" y="110" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">GitHub Actions</text>
+        <text x="824" y="126" fill="#0F2547" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">pytest + ruff</text>
+        <rect x="732" y="244" width="184" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="732" y="244" width="184" height="80" rx="6" fill="#EFECE6" stroke="#2E5AA8" stroke-width="1"/>
+        <rect x="740" y="250" width="28" height="12" rx="2" fill="transparent" stroke="rgba(46,90,168,0.45)" stroke-width="0.8"/>
+        <text x="754" y="259" fill="#2E5AA8" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">05</text>
+        <text x="824" y="286" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Pull Request</text>
+        <text x="824" y="302" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">propuesta hacia main</text>
+        <rect x="436" y="244" width="208" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="436" y="244" width="208" height="80" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <rect x="444" y="250" width="28" height="12" rx="2" fill="transparent" stroke="rgba(15,37,71,0.28)" stroke-width="0.8"/>
+        <text x="458" y="259" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">06</text>
+        <text x="540" y="286" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Review</text>
+        <text x="540" y="302" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">código y pruebas</text>
+        <rect x="140" y="244" width="208" height="80" rx="6" fill="#F7F6F2"/>
+        <rect x="140" y="244" width="208" height="80" rx="6" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.4"/>
+        <rect x="148" y="250" width="68" height="12" rx="2" fill="transparent" stroke="#C59216" stroke-width="0.8"/>
+        <text x="182" y="259" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle" letter-spacing="0.08em">07 · FIN</text>
+        <text x="244" y="286" fill="#0F2547" font-size="12" font-weight="600" font-family="'Geist', sans-serif" text-anchor="middle">Merge a main</text>
+        <text x="244" y="302" fill="#0F2547" font-size="9" font-family="'Geist Mono', monospace" text-anchor="middle">historial limpio</text>
+        <line x1="32" y1="364" x2="928" y2="364" stroke="rgba(15,37,71,0.12)" stroke-width="0.8"/>
+        <text x="32" y="380" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>
+        <rect x="120" y="371" width="16" height="12" rx="2" fill="rgba(197,146,22,0.10)" stroke="#C59216" stroke-width="1.2"/>
+        <text x="144" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Compuerta de calidad / cierre</text>
+        <rect x="346" y="371" width="16" height="12" rx="2" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1"/>
+        <text x="370" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Paso local o de equipo</text>
+        <rect x="530" y="371" width="16" height="12" rx="2" fill="#EFECE6" stroke="#2E5AA8" stroke-width="1"/>
+        <text x="554" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Operación en GitHub</text>
+        <line x1="696" y1="377" x2="714" y2="377" stroke="#C59216" stroke-width="1.4"/>
+        <text x="720" y="380" fill="#3B5B8C" font-size="9" font-family="'Geist', sans-serif">Transición condicionada</text>
+      </svg>
+    </div>
+  </div>
+</body>
+</html>
