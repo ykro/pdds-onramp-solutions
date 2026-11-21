@@ -20,6 +20,16 @@ El valor técnico se comprueba cuando el frontend tipado conversa con el API rea
 
 ![Arquitectura de deploy](diagrams/deployment.svg)
 
+## Referencia visual
+
+Así se ven las tres vistas cuando la aplicación está lista.
+
+![Vista de inicio de sesión](../../docs/screenshots/01-login.png)
+
+![Vista de catálogo y carrito](../../docs/screenshots/02-catalog.png)
+
+![Vista de mis pedidos](../../docs/screenshots/03-orders.png)
+
 ## Criterios de aceptación
 
 - `CA-5.1` `frontend/` pasa `npm run typecheck` y `npm run build` sin errores.

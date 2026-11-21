@@ -41,6 +41,11 @@ Las respuestas a las tres preguntas de autoevaluación de cada paso viven al fin
 
 Demo en vivo en [https://pdds-onramp.vercel.app](https://pdds-onramp.vercel.app).
 
+Credenciales de prueba para entrar al sitio:
+
+- Correo `demo@tiendita.dev`
+- Contraseña `TienditaDemo2026!`
+
 Inicio de sesión
 
 ![Vista de inicio de sesión](docs/screenshots/01-login.png)
