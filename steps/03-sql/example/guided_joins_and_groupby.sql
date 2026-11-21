@@ -29,10 +29,11 @@ LEFT JOIN order_items AS oi
 GROUP BY p.id, p.name
 ORDER BY units_sold DESC, p.name ASC;
 
--- 3. GROUP BY + HAVING
--- Filtra primero las filas individuales con WHERE (por ejemplo, órdenes confirmadas)
+-- 3. GROUP BY + HAVING + fechas por mes con TO_CHAR
+-- Filtra primero las filas individuales con WHERE (por ejemplo, pedidos pagados)
 -- y filtra después los grupos agregados con HAVING (categorías con al menos 2 unidades).
 SELECT
+    TO_CHAR(o.created_at AT TIME ZONE 'UTC', 'YYYY-MM') AS month,
     p.category,
     COUNT(DISTINCT oi.order_id) AS orders_count,
     SUM(oi.quantity) AS units_sold,
@@ -42,10 +43,10 @@ INNER JOIN orders AS o
     ON o.id = oi.order_id
 INNER JOIN products AS p
     ON p.id = oi.product_id
-WHERE o.status = 'confirmed'
-GROUP BY p.category
+WHERE o.status = 'paid'
+GROUP BY 1, p.category
 HAVING SUM(oi.quantity) >= 2
-ORDER BY gross_revenue_cents DESC, p.category ASC;
+ORDER BY 1 ASC, gross_revenue_cents DESC, p.category ASC;
 
 -- 4. Verificación mental antes de pasar a transacciones
 -- Observa que SUM(...) nunca debe devolverse como FLOAT; usa BIGINT o INTEGER

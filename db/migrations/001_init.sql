@@ -26,6 +26,10 @@ CREATE TABLE IF NOT EXISTS order_items (
     unit_price_cents INTEGER NOT NULL CHECK (unit_price_cents >= 0)
 );
 -- SOLUTION_REPLACE
--- -- TODO: crea las tablas products, orders y order_items con sus constraints (CHECK stock >= 0, UNIQUE sku, FKs)
+-- -- TODO (CA-3.1): completa los constraints (UNIQUE en sku, CHECK >= 0, llaves foráneas y estados válidos)
+-- -- Columnas esperadas por db/load.py:
+-- --   products(id SERIAL PRIMARY KEY, sku TEXT, name TEXT, category TEXT, price_cents INTEGER, stock INTEGER)
+-- --   orders(id SERIAL PRIMARY KEY, user_id TEXT, status TEXT, total_cents INTEGER, created_at TIMESTAMPTZ)
+-- --   order_items(id SERIAL PRIMARY KEY, order_id INTEGER, product_id INTEGER, quantity INTEGER, unit_price_cents INTEGER)
 -- SELECT 1 WHERE FALSE;
 -- SOLUTION_END

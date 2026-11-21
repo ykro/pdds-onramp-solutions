@@ -6,7 +6,7 @@
 [![Paso 4](https://github.com/ykro/pdds-onramp/actions/workflows/step-4.yml/badge.svg)](https://github.com/ykro/pdds-onramp/actions/workflows/step-4.yml)
 [![Paso 5](https://github.com/ykro/pdds-onramp/actions/workflows/step-5.yml/badge.svg)](https://github.com/ykro/pdds-onramp/actions/workflows/step-5.yml)
 
-Este repositorio es un **onramp** práctico y autoevaluable para preparar tu entrada al Postgrado en Diseño y Desarrollo de Software (PDDS) de Universidad Galileo. Todo gira alrededor de un solo proyecto, **Tiendita**, pero cada uno de los cinco pasos se puede trabajar de forma independiente. Si ya dominas terminal y Git, puedes arrancar directo en el paso 2, el 3 o el que necesites reforzar.
+Los cinco badges arrancan en rojo a propósito. Este repositorio está pensado para ayudarte a preparar tu entrada al Postgrado en Diseño y Desarrollo de Software (PDDS) de Universidad Galileo, pasando cada paso a verde a tu ritmo. Todo gira alrededor de un solo proyecto, **Tiendita**, pero cada uno de los cinco pasos se puede trabajar de forma independiente. Si ya dominas terminal y Git, puedes arrancar directo en el paso 2, el 3 o el que necesites reforzar.
 
 ![Mapa de Tiendita](docs/diagrams/tiendita-overview.svg)
 
@@ -19,6 +19,14 @@ Este repositorio es un **onramp** práctico y autoevaluable para preparar tu ent
 | Paso 3 | Modelado relacional, SQL, transacciones y code review | [steps/03-sql/README.md](steps/03-sql/README.md) |
 | Paso 4 | Arquitectura por capas, API REST en FastAPI y JWT | [steps/04-api-auth/README.md](steps/04-api-auth/README.md) |
 | Paso 5 | React, TypeScript, Neon Auth y deploy en Vercel | [steps/05-react-deploy/README.md](steps/05-react-deploy/README.md) |
+
+## Cómo usar asistentes de IA
+
+Puedes usar asistentes de IA mientras trabajas este onramp, siempre que te ayuden a aprender y no a saltarte el razonamiento.
+
+1. Úsalos para entender mensajes de error, comparar alternativas o destrabarte después de leer `hints/1.md`.
+2. Evita aceptar código que no puedas explicar con tus propias palabras.
+3. Corre `make self-check STEP=N` y revisa las pruebas contra bugs plantados para comprobar si dominaste cada concepto.
 
 ## Inicio rápido
 

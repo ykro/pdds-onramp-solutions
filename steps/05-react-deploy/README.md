@@ -9,7 +9,7 @@ El software entrega valor cuando un usuario real abre la tienda en su navegador 
 ## Qué se construye
 
 **Núcleo**
-- El hook `frontend/src/hooks/useCart.ts` y las vistas `LoginView`, `CatalogView` y `OrdersView` verificadas con `vitest` y React Testing Library, siguiendo [web.dev Learn Accessibility](https://web.dev/learn/accessibility).
+- Completar los tres métodos pendientes del hook `frontend/src/hooks/useCart.ts` (`addItem`, `removeItem` y `totalCents`); las vistas `LoginView`, `CatalogView` y `OrdersView` ya vienen listas y probadas con `vitest` y React Testing Library, siguiendo [web.dev Learn Accessibility](https://web.dev/learn/accessibility).
 - La conexión con [Neon](https://neon.com/docs/guides/neon-auth) y Neon Auth más el deploy de un solo proyecto en [Vercel Python](https://vercel.com/docs/functions/runtimes/python), registrando `app_url` en `deploy.json`.
 
 **Extendido**

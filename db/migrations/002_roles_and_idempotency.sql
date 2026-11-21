@@ -13,6 +13,8 @@ CREATE TABLE IF NOT EXISTS idempotency_keys (
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 -- SOLUTION_REPLACE
--- -- TODO: crea las tablas admins e idempotency_keys sin modificar 001_init.sql
+-- -- TODO (CA-4.1): crea las tablas sin modificar 001_init.sql:
+-- --   admins(user_id TEXT PRIMARY KEY, granted_at TIMESTAMPTZ DEFAULT NOW())
+-- --   idempotency_keys(key TEXT PRIMARY KEY, user_id TEXT, order_id INTEGER REFERENCES orders(id), created_at TIMESTAMPTZ DEFAULT NOW())
 -- SELECT 1 WHERE FALSE;
 -- SOLUTION_END
