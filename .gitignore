@@ -5,6 +5,8 @@ __pycache__/
 .ruff_cache/
 frontend/node_modules/
 frontend/dist/
+backend/static/
+public/
 frontend/playwright-report/
 frontend/test-results/
 .env
@@ -12,3 +14,4 @@ frontend/test-results/
 .DS_Store
 *.log
 !data/access.log
+.vercel

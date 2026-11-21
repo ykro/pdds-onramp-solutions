@@ -25,6 +25,11 @@ def test_ca_1_1_script_executable_and_missing_file_exit_code() -> None:
         f"CA-1.1: Se esperaba código de salida 1 cuando el archivo no existe, "
         f"pero se obtuvo {res.returncode}."
     )
+    ok = subprocess.run([str(SCRIPT), str(LOG_FILE)], capture_output=True, text=True)
+    assert ok.returncode == 0, (
+        f"CA-1.1: scripts/log_report.sh debe salir con código 0 cuando el archivo existe "
+        f"(obtenido={ok.returncode})."
+    )
 
 
 def test_ca_1_2_log_report_counts() -> None:

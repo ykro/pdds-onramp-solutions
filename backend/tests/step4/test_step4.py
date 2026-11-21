@@ -231,13 +231,35 @@ def test_ca_4_6_admin_role_required_for_restock(
 
 
 @pytest.mark.extra
-def test_ca_4_8_openapi_contract_matches_frontend() -> None:
+def test_ca_4_8_openapi_contract_matches_frontend(
+    local_jwks: dict[str, Any], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setenv("NEON_AUTH_JWKS_URL", local_jwks["jwks_url"])
+    monkeypatch.setenv("JWT_ISSUER", "https://tiendita.local")
+    monkeypatch.setenv("JWT_AUDIENCE", "tiendita-api")
+    get_jwk_client.cache_clear()
+
+    fake_repo = _FakeRepo()
     app = create_app()
+    app.dependency_overrides[get_store_service] = lambda: StoreService(fake_repo)
     schema = app.openapi()
     paths = set(schema["paths"].keys())
     required = {"/api/health", "/api/products", "/api/orders", "/api/orders/mine", "/api/products/{sku}/stock"}
     missing = required - paths
     assert not missing, f"CA-4.8 (extendido): Faltan rutas en /api/openapi.json: {missing}"
+
+    client = TestClient(app)
+    token = local_jwks["sign"]("usr_admin")
+    headers = {"Authorization": f"Bearer {token}"}
+    assert client.post("/api/orders", json={"sku": "SKU-001", "quantity": 1}, headers=headers).status_code == 201, (
+        "CA-4.8 (extendido): POST /api/orders debe responder 201 y cumplir el contrato OpenAPI."
+    )
+    assert client.get("/api/orders/mine", headers=headers).status_code == 200, (
+        "CA-4.8 (extendido): GET /api/orders/mine debe responder 200."
+    )
+    assert client.patch("/api/products/SKU-001/stock", json={"delta": 2}, headers=headers).status_code == 200, (
+        "CA-4.8 (extendido): PATCH /api/products/{sku}/stock debe responder 200 para un admin."
+    )
 
 
 def _ensure_base_schema(conn: psycopg.Connection[Any]) -> None:

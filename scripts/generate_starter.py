@@ -21,11 +21,14 @@ STARTER_DIR = SOLUTIONS_DIR.parent / "pdds-onramp"
 IGNORE_DIRS = {
     ".git",
     ".venv",
+    ".vercel",
     ".pytest_cache",
     ".ruff_cache",
     "__pycache__",
     "node_modules",
     "dist",
+    "public",
+    "screenshots",
     "playwright-report",
     "test-results",
 }
@@ -109,6 +112,10 @@ def generate() -> None:
                 continue
             src = Path(root) / fname
             dst = target_dir / fname
+            if rel_file == "deploy.json":
+                dst.write_text('{\n  "app_url": ""\n}\n', encoding="utf-8")
+                transformed_count += 1
+                continue
             if src.suffix in TEXT_EXTS:
                 raw = src.read_text(encoding="utf-8")
                 cleaned = strip_solution_blocks(raw, src.suffix)

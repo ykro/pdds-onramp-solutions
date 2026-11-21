@@ -136,10 +136,13 @@ def check_starter_fails() -> list[str]:
     ]
     for label, cmd in checks:
         res = subprocess.run(cmd, cwd=STARTER_DIR, capture_output=True, text=True)
+        out = (res.stdout or "") + (res.stderr or "")
         if res.returncode == 0:
             errors.append(f"{label} PASSED in starter (must fail so nothing passes without work!)")
+        elif " passed" in out:
+            errors.append(f"{label} had individual tests passing in starter:\n{out}")
         else:
-            print(f"[EXPECTED FAIL] {label}")
+            print(f"[EXPECTED ALL FAIL] {label}")
     return errors
 
 

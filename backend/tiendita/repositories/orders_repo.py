@@ -136,8 +136,17 @@ def place_order_idempotent(
     idempotency_key: str | None = None,
 ) -> OrderSummary:
     """Wrapper that handles concurrent UniqueViolation on idempotency_key cleanly."""
+    # SOLUTION_START
+    from db.bootstrap.base_order import create_order_for_step4
+
     try:
-        return place_order(conn, user_id, sku, quantity, idempotency_key=idempotency_key)
+        try:
+            return place_order(conn, user_id, sku, quantity, idempotency_key=idempotency_key)
+        except NotImplementedError:
+            # Allow Step 4 extended (CA-4.7) to run independently of Step 3
+            return create_order_for_step4(
+                conn, user_id, sku, quantity, idempotency_key=idempotency_key
+            )
     except psycopg.errors.UniqueViolation:
         if not idempotency_key:
             raise
@@ -160,6 +169,9 @@ def place_order_idempotent(
                 status=str(existing["status"]),
                 total_cents=int(existing["total_cents"]),
             )
+    # SOLUTION_REPLACE
+    # raise NotImplementedError("TODO (extendido): maneja UniqueViolation para idempotencia")
+    # SOLUTION_END
 
 
 def find_orders_by_sku(conn: psycopg.Connection[Any], sku: str) -> list[dict[str, Any]]:
