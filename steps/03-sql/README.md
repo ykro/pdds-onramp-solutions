@@ -16,7 +16,7 @@ Toda aplicación de negocio depende de un esquema relacional sano y de consultas
 
 ## Qué vas a hacer
 
-- **Leer**. Levanta PostgreSQL local con `make db-up` y revisa el esquema ya listo en `db/migrations/001_init.sql`, el diagrama `diagrams/db-schema.svg` y los ejemplos de joins y agrupaciones en [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql).
+- **Leer**. Levanta PostgreSQL local con `make db-up` (en local necesitas Docker Desktop abierto; `make doctor` te dice si responde) y revisa el esquema ya listo en `db/migrations/001_init.sql`, el diagrama `diagrams/db-schema.svg` y los ejemplos de joins y agrupaciones en [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql).
 - **Debuguear**. Llama a `find_orders_by_sku()` de `backend/tiendita/repositories/orders_repo.py` con `SKU-001` y con el texto `' OR '1'='1`. En el primer caso aparecen pedidos que el negocio ya no cuenta; en el segundo, pedidos de todos los productos. Explica por qué pasa cada cosa antes de corregirla.
 - **Escribir**. Completa las consultas analíticas en `db/queries/monthly_sales.sql` y `db/queries/top_products.sql` sobre las tablas reales del esquema.
 

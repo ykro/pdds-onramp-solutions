@@ -48,6 +48,6 @@ Esta versión falla porque omite criterios verificables, deja abierto qué pasa 
 | --- | --- | --- |
 | 1 | Problema y usuario claros | Identifica quién usa la funcionalidad y qué necesidad concreta resuelve. |
 | 2 | Criterios verificables | Cada criterio describe una entrada y una salida comprobables con una prueba o comando. |
-| 3 | Casos borde y alcance | Incluye qué ocurre con listas vacías, errores o permisos, y declara qué queda fuera. |
+| 3 | Edge cases y alcance | Incluye qué ocurre con listas vacías, errores o permisos, y declara qué queda fuera. |
 | 4 | PR enfocado y trazable | El Pull Request enlaza la historia, explica el porqué y evita cambios ajenos al objetivo. |
 | 5 | Pasos de verificación | Indica exactamente qué comando o flujo ejecutar para comprobar el cambio. |

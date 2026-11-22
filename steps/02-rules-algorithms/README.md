@@ -8,7 +8,7 @@ Este paso toma unos 75 minutos.
 
 1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
 2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos? (Pista, ejecuta `make bench` y lee `backend/tiendita/search.py`.)
-3. ¿Qué ventaja da escribir pruebas automatizadas sobre casos borde de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
+3. ¿Qué ventaja da escribir pruebas automatizadas sobre edge cases de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
 
 ## Por qué importa
 
