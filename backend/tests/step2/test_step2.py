@@ -6,7 +6,6 @@ import inspect
 from pathlib import Path
 
 import pytest
-
 from tiendita import catalog, pricing
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -47,17 +46,85 @@ def test_ca_2_2_catalog_search_handles_accents_case_and_spaces() -> None:
     )
 
 
-def test_ca_2_3_student_pricing_tests_exist_and_pass() -> None:
+def _student_test_functions() -> list:
     student_file = ROOT / "backend" / "tests" / "step2" / "test_student_pricing.py"
     raw = student_file.read_text(encoding="utf-8")
     assert "TODO" not in raw, (
-        "CA-2.3: Completa tus 3 tests en backend/tests/step2/test_student_pricing.py y quita los TODO."
+        "CA-2.3: Completa tus 3 tests en backend/tests/step2/test_student_pricing.py "
+        "y quita los TODO."
     )
     from backend.tests.step2 import test_student_pricing as student_mod
 
-    test_fns = [fn for name, fn in inspect.getmembers(student_mod, inspect.isfunction) if name.startswith("test_")]
-    assert len(test_fns) >= 3, (
-        f"CA-2.3: Escribe al menos 3 funciones test_* en test_student_pricing.py (actuales={len(test_fns)})."
-    )
+    return [
+        fn
+        for name, fn in inspect.getmembers(student_mod, inspect.isfunction)
+        if name.startswith("test_")
+    ]
+
+
+def _failures(test_fns: list) -> list[str]:
+    failed = []
     for fn in test_fns:
-        fn()
+        try:
+            fn()
+        except KeyboardInterrupt:
+            raise
+        except BaseException:  # noqa: BLE001 - pytest.fail y pytest.raises lanzan BaseException
+            failed.append(fn.__name__)
+    return failed
+
+
+def test_ca_2_3_student_pricing_tests_exist_and_pass() -> None:
+    test_fns = _student_test_functions()
+    assert len(test_fns) >= 3, (
+        "CA-2.3: Escribe al menos 3 funciones test_* en test_student_pricing.py "
+        f"(actuales={len(test_fns)})."
+    )
+    failed = _failures(test_fns)
+    assert not failed, f"CA-2.3: Estas pruebas tuyas fallan con tu pricing.py actual: {failed}."
+
+
+def test_ca_2_3_student_tests_fail_on_buggy_versions(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Cada prueba útil debe ponerse en rojo cuando reaparece uno de los tres bugs del paso."""
+    test_fns = _student_test_functions()
+    original_total = pricing.calculate_order_total
+
+    def banker_rounding(amount_cents: int, percent: int) -> int:
+        return int(round(amount_cents * (percent / 100.0)))
+
+    def total_without_cap(items, coupon=None):  # type: ignore[no-untyped-def]
+        if coupon is not None:
+            coupon = pricing.Coupon(coupon.code, coupon.percent_off, None)
+        return original_total(items, coupon=coupon)
+
+    def total_without_stock_check(items, coupon=None):  # type: ignore[no-untyped-def]
+        relaxed = [
+            pricing.CartItem(
+                i.sku, i.unit_price_cents, i.quantity, max(i.quantity, i.available_stock)
+            )
+            for i in items
+        ]
+        return original_total(relaxed, coupon=coupon)
+
+    buggy_versions = {
+        "redondeo bancario con float en round_half_up_percent": (
+            "round_half_up_percent",
+            banker_rounding,
+        ),
+        "cupón sin tope max_discount_cents": ("calculate_order_total", total_without_cap),
+        "venta sin revisar inventario (sin OutOfStockError)": (
+            "calculate_order_total",
+            total_without_stock_check,
+        ),
+    }
+    missed = []
+    for label, (attr, fake) in buggy_versions.items():
+        with monkeypatch.context() as m:
+            m.setattr(pricing, attr, fake)
+            if not _failures(test_fns):
+                missed.append(label)
+    assert not missed, (
+        "CA-2.3: Tus pruebas siguen en verde cuando reaparece este bug: "
+        + "; ".join(missed)
+        + ". Escribe una prueba con un caso que lo exponga."
+    )

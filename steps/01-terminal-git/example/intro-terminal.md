@@ -1,6 +1,6 @@
 # Guía práctica opcional de terminal, rutas, variables y JSON
 
-Si ya te mueves con soltura en Bash o Zsh, puedes saltar esta guía ejecutando `python3 steps/01-terminal-git/self_check.py --skip-intro`. Si prefieres afianzar los comandos base antes del Paso 1, prueba cada bloque en la terminal de tu Codespace.
+Si ya te mueves con soltura en Bash o Zsh, puedes saltar esta guía e ir directo al Paso 1. Si prefieres afianzar los comandos base, prueba cada bloque en la terminal de tu Codespace.
 
 ## 1. Dónde estás y cómo moverte
 
@@ -66,7 +66,7 @@ Todo script de Bash lleva un *shebang* en la primera línea (`#!/usr/bin/env bas
 
 ```bash
 chmod +x steps/01-terminal-git/example/sample_report.sh
-./steps/01-terminal-git/example/sample_report.sh data/products.json
+./steps/01-terminal-git/example/sample_report.sh data/products.csv
 ```
 
 Con estos cinco bloques cubres todo lo necesario para resolver el Paso 1.

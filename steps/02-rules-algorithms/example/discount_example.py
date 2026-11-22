@@ -64,7 +64,7 @@ def test_fixed_coupon_never_produces_negative_total() -> None:
 
 def test_coupon_respects_exact_minimum_threshold() -> None:
     coupon = Coupon(code="MIN1000", fixed_off_cents=200, min_subtotal_cents=1000)
-    # Si alguien cambia `<` por `<=` (bug plantado), este test falla de inmediato.
+    # Si alguien cambia `<` por `<=`, este test falla de inmediato.
     assert calculate_discount_cents(999, coupon) == 0
     assert calculate_discount_cents(1000, coupon) == 200
 

@@ -8,7 +8,6 @@ from typing import Any
 
 import psycopg
 import pytest
-
 from tiendita.repositories import orders_repo
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -16,20 +15,7 @@ QUERIES_DIR = ROOT / "db" / "queries"
 DB_URL = os.environ.get("DATABASE_URL", "")
 
 
-def _pg_available() -> bool:
-    if not DB_URL:
-        return False
-    try:
-        with psycopg.connect(DB_URL, connect_timeout=2):
-            return True
-    except Exception:
-        return False
-
-
-pytestmark = [
-    pytest.mark.db,
-    pytest.mark.skipif(not _pg_available(), reason="PostgreSQL DATABASE_URL not available"),
-]
+pytestmark = [pytest.mark.db]
 
 
 def test_ca_3_1_monthly_sales_query(seeded_db: psycopg.Connection[Any]) -> None:
@@ -54,9 +40,13 @@ def test_ca_3_2_top_products_query(seeded_db: psycopg.Connection[Any]) -> None:
     assert rows[0]["units_sold"] >= rows[4]["units_sold"]
 
 
-def test_ca_3_3_find_orders_blocks_sql_injection_and_cancelled(seeded_db: psycopg.Connection[Any]) -> None:
+def test_ca_3_3_find_orders_blocks_sql_injection_and_cancelled(
+    seeded_db: psycopg.Connection[Any],
+) -> None:
     active_rows = orders_repo.find_orders_by_sku(seeded_db, "SKU-001")
-    assert len(active_rows) > 0, "CA-3.3: find_orders_by_sku debe devolver pedidos activos para SKU-001."
+    assert len(active_rows) > 0, (
+        "CA-3.3: find_orders_by_sku debe devolver pedidos activos para SKU-001."
+    )
     assert all(r["status"] != "cancelled" for r in active_rows), (
         "CA-3.3: find_orders_by_sku devolvió pedidos cancelados; agrega AND o.status <> 'cancelled'."
     )

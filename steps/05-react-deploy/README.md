@@ -38,9 +38,10 @@ Así se ven las tres vistas cuando la aplicación está lista.
 
 ## Al terminar
 
-1. ¿Qué ventajas da tipar las respuestas del backend en TypeScript antes de renderizarlas en una vista de React? (Pista, revisa `example/python_vs_typescript.md` y `frontend/src/lib/api.ts`.)
-2. ¿Por qué conviene derivar totales como `totalCents` desde la lista de ítems del carrito en lugar de guardar un segundo estado manual? (Pista, revisa `frontend/src/hooks/useCart.ts`.)
-3. ¿Qué valida un smoke test sobre producción que las pruebas unitarias locales dejan fuera? (Pista, revisa `diagrams/deployment.svg` y `backend/tests/step5/test_prod_deploy.py`.)
+1. Si guardaras `totalCents` en un `useState` aparte, ¿qué pasaría al quitar un producto del carrito y olvidar actualizarlo?
+2. Tu deploy en Vercel responde `200` en `/api/health`, pero el login falla. ¿Qué revisas primero?
+3. `npm test` pasa en local y `make check-prod` falla. ¿Qué tipo de problema indica eso?
+4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -48,6 +49,7 @@ Ejecuta `make check STEP=5` para validar el frontend y las pruebas en local, y c
 
 ## Respuestas de autoevaluación
 
-1. TypeScript verifica en tiempo de compilación que los campos usados en las vistas coincidan con el contrato del API. Así atrapa nombres mal escritos, tipos incompatibles y valores opcionales antes de que lleguen al navegador del usuario.
-2. Calcular `totalCents` con `useMemo` a partir de `items` mantiene una sola fuente de verdad. Cada alta, baja o cambio de cantidad recalcula el monto exacto sin riesgo de desincronizar dos estados separados.
-3. Un smoke test contra la URL desplegada comprueba variables de entorno reales, conectividad con Neon, validación JWKS contra Neon Auth, ruteo entre frontend y funciones de Vercel y comportamiento tras un cold start.
+1. El total mostraría el monto viejo y el carrito quedaría inconsistente. Al derivarlo de `items` con `useMemo`, el total siempre corresponde a lo que hay en el carrito.
+2. Las variables de entorno de Production (`NEON_AUTH_JWKS_URL` y `VITE_NEON_AUTH_URL`) y que tu dominio de Vercel esté en Trusted Domains de Neon Auth. El health check no usa autenticación, por eso responde bien.
+3. Un problema de configuración o de entorno (variables, URL de la base de datos, migraciones sin aplicar o dominio), no de lógica, porque el mismo código ya pasó sus tests.
+4. Respuesta personal. Debe mencionar el total derivado de cantidad por precio y lo que valida el smoke test en producción.

@@ -28,9 +28,10 @@ Quien lidera equipos técnicos necesita leer scripts de operación en minutos, d
 
 ## Al terminar
 
-1. ¿Para qué sirve el código de salida (`exit code`) de un script en la terminal cuando forma parte de un pipeline de automatización? (Pista, revisa `scripts/log_report.sh` y `example/intro-terminal.md`.)
-2. ¿Por qué conviene separar un cambio en una rama nueva y abrir un Pull Request en lugar de empujar commits directo a `main`? (Pista, revisa `diagrams/git-flow.svg` y `examples/code-review.md`.)
-3. ¿Qué diferencia a una historia de usuario verificable de una petición ambigua cuando un equipo planea un cambio? (Pista, revisa `docs/stories/001-order-history.md`.)
+1. `log_report.sh` corre cada noche en un job de CI y una noche el archivo no existe. ¿Qué pasa con el pipeline si el script sale con `0` y qué pasa si sale con `1`?
+2. Alguien aprueba tu PR sin correr el script. ¿Qué evidencia le pedirías en el code review, según la rúbrica de `examples/code-review.md`?
+3. Escribe un criterio Dado / Cuando / Entonces para "el reporte ignora las líneas vacías del log". ¿Cómo lo comprobarías con un test?
+4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -38,6 +39,7 @@ Ejecuta `make check STEP=1` desde la raíz del repositorio para validar los tres
 
 ## Respuestas de autoevaluación
 
-1. El código de salida comunica al sistema operativo y a otros scripts si el comando terminó bien (`0`) o falló (un número distinto de `0`, como `1`). Un pipeline de CI o un cron detiene la ejecución y dispara alertas cuando recibe un código distinto de cero, evitando procesar reportes vacíos o corruptos.
-2. Trabajar en una rama aísla el cambio hasta que pase las pruebas y reciba revisión de otro ingeniero. El Pull Request deja registro del contexto, facilita revertir un cambio específico si rompe producción y reduce el riesgo de dañar `main`.
-3. Una historia verificable nombra quién recibe el valor, qué necesita y por qué importa (Como / Quiero / Para), y traduce ese objetivo en escenarios observables (Dado / Cuando / Entonces). Así ingeniería, producto y QA acuerdan qué significa terminar antes de escribir código.
+1. Con `0`, el pipeline sigue en verde y publica un reporte vacío; nadie se entera hasta que alguien lo lee. Con `1`, el job queda en rojo y avisa esa misma noche.
+2. La salida real del script con `data/access.log`, la prueba con un archivo inexistente que muestre `exit=1`, y un diff que solo toque el patrón de `5xx` y la validación del archivo.
+3. Dado un log con una línea vacía al final, Cuando corro `log_report.sh`, Entonces `total_requests` no cuenta esa línea. El test crea un archivo temporal con esa línea y compara el conteo contra el mismo log sin ella.
+4. Respuesta personal. Debe mencionar el código de salida para el archivo faltante y el patrón que ahora cuenta solo los códigos que empiezan con 5.

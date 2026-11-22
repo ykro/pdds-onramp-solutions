@@ -17,8 +17,18 @@ DB_URL = os.environ.get("DATABASE_URL", "")
 @pytest.fixture()
 def seeded_db() -> Any:
     if not DB_URL:
-        pytest.skip("PostgreSQL DATABASE_URL not available")
-    with psycopg.connect(DB_URL, row_factory=dict_row, autocommit=True) as admin_conn:
+        pytest.fail(
+            "Paso 3: falta DATABASE_URL. Corre `make db-up` y luego `make check STEP=3` "
+            "(el Makefile ya apunta al PostgreSQL local)."
+        )
+    try:
+        admin = psycopg.connect(DB_URL, row_factory=dict_row, autocommit=True, connect_timeout=3)
+    except psycopg.OperationalError as exc:
+        pytest.fail(
+            f"Paso 3: no hay conexión a PostgreSQL en {DB_URL}. "
+            f"¿Corriste `make db-up` y Docker está abierto? Detalle: {exc}"
+        )
+    with admin as admin_conn:
         with admin_conn.cursor() as cur:
             cur.execute("DROP TABLE IF EXISTS order_items, orders, products CASCADE")
 

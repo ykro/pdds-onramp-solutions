@@ -30,9 +30,10 @@ En un sistema en producción, separar transporte HTTP, reglas de negocio y persi
 
 ## Al terminar
 
-1. ¿Por qué separar un backend en rutas HTTP, capa de servicio y repositorio simplifica probar reglas de negocio y seguridad? (Pista, revisa `diagrams/layers.svg` y `example/layered_endpoint_example.py`.)
-2. ¿Qué diferencia existe entre autenticar quién envió un token JWT y autorizar qué recursos puede consultar esa persona? (Pista, revisa `backend/tiendita/api/auth.py` y `backend/tiendita/services/store_service.py`.)
-3. ¿Qué debe devolver un endpoint REST cuando el recurso solicitado por identificador no existe y por qué conviene reflejarlo en OpenAPI? (Pista, revisa `backend/tiendita/api/app.py`.)
+1. `list_orders_for_user` ya filtra por `user_id` en el SQL. ¿Por qué conviene filtrar otra vez en el servicio?
+2. Ana pide `GET /api/orders/mine`. ¿Qué responde el API si su token venció hace un minuto, y qué responde si el token es válido pero Ana todavía no tiene pedidos?
+3. Quieres agregar `GET /api/products/{sku}/stock`. ¿Qué archivo tocas en cada capa y qué test escribirías primero?
+4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -40,6 +41,7 @@ Ejecuta `make check STEP=4` para validar los tres criterios en local usando el s
 
 ## Respuestas de autoevaluación
 
-1. Al inyectar el repositorio en el servicio, puedes reemplazar PostgreSQL por un repositorio en memoria durante las pruebas y verificar reglas de negocio o autorización en milisegundos, sin levantar red ni base de datos.
-2. La autenticación confirma la identidad verificando firma, vigencia, emisor y audiencia del JWT para extraer `sub`. La autorización decide después si esa identidad tiene permiso para leer o modificar un recurso concreto, evitando fugas entre usuarios (IDOR).
-3. El servidor debe responder `404 Not Found` cuando el identificador no corresponde a un producto existente. Publicar la ruta y sus códigos en `/api/openapi.json` mantiene alineados al equipo de frontend, a QA y a los consumidores externos del contrato.
+1. Porque la regla de autorización vive en el servicio. Si mañana alguien cambia el repositorio o lo reemplaza por otro, el servicio sigue garantizando que nadie lee pedidos ajenos, y esa regla se puede testear sin base de datos.
+2. Con el token vencido responde `401 Unauthorized`. Con un token válido y sin pedidos responde `200 OK` con una lista vacía, porque la petición es correcta aunque no haya datos.
+3. Una consulta en `orders_repo.py`, un método en `store_service.py` y la ruta en `app.py`. Conviene escribir primero el test del servicio con un repositorio falso, porque es el más rápido y fija la regla (stock conocido y `404` para un SKU inexistente).
+4. Respuesta personal. Debe distinguir autenticación de autorización y describir el recorrido del endpoint por las tres capas.

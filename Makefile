@@ -2,6 +2,10 @@
 
 STEP ?= 1
 
+# PostgreSQL local de `make db-up`. Codespaces y CI ya traen su propia DATABASE_URL.
+DATABASE_URL ?= postgresql://postgres:postgres@localhost:5432/tiendita
+export DATABASE_URL
+
 check:
 	@set -e; \
 	if [ "$(STEP)" = "1" ]; then \

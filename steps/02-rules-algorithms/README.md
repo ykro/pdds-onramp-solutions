@@ -22,13 +22,14 @@ Los bugs más caros en producción suelen vivir en reglas de negocio pequeñas y
 
 - `CA-2.1` `backend/tiendita/pricing.py` calcula centavos exactos con `int`, aplica redondeo half-up, respeta `max_discount_cents` y lanza `OutOfStockError` cuando falta inventario.
 - `CA-2.2` `backend/tiendita/catalog.py` carga `data/products.csv` y encuentra `"  pantalón   chino "` mediante `search_by_name`.
-- `CA-2.3` `backend/tests/step2/test_student_pricing.py` contiene al menos tres funciones de prueba reales que pasan en `pytest`.
+- `CA-2.3` `backend/tests/step2/test_student_pricing.py` contiene al menos tres tests que pasan con tu código, y cada una de las tres versiones con un bug (redondeo con `float`, cupón sin tope y venta sin revisar inventario) pone al menos uno de ellos en rojo.
 
 ## Al terminar
 
-1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
-2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos? (Pista, ejecuta `make bench` y lee `backend/tiendita/search.py`.)
-3. ¿Qué ventaja da escribir pruebas automatizadas sobre casos borde de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
+1. Un cupón de 50 % se aplica a un producto de 5 centavos. ¿Cuánto descuento da tu `round_half_up_percent` y cuánto daba la versión con `float` y `round()`?
+2. Si el catálogo llega a un millón de productos, ¿qué esperas de la búsqueda lineal frente al diccionario según lo que mediste con `make bench`? ¿En qué caso la búsqueda lineal sigue siendo necesaria?
+3. `make check STEP=2` corre tus tests contra versiones con un bug. Si una de esas versiones queda en verde, ¿qué te dice de tus tests?
+4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -36,6 +37,7 @@ Ejecuta `make check STEP=2` para validar los tres criterios y corre `make bench`
 
 ## Respuestas de autoevaluación
 
-1. El estándar binario IEEE 754 representa fracciones decimales como `0.1` con aproximaciones, y esas diferencias se acumulan en descuentos, impuestos y sumas de carrito. Operar en centavos enteros (`int`) con redondeo explícito mantiene exactitud total en cada transacción.
-2. En una búsqueda lineal (`O(n)`), multiplicar por 100 el catálogo multiplica cerca de 100 veces el número de comparaciones. En un diccionario (`O(1)`), el tiempo de búsqueda permanece casi constante aunque el catálogo tenga cien veces más productos.
-3. Probar funciones puras en aislamiento corre en milisegundos, reproduce casos límite exactos (como redondeos en `.5`, topes de cupón y falta de stock) y detecta regresiones de inmediato sin depender de red ni contenedores.
+1. Tu versión devuelve 3 centavos (`(5 * 50 + 50) // 100`). La versión con `round()` devolvía 2, porque `round(2.5)` redondea al par más cercano.
+2. El diccionario responde casi igual de rápido con mil o con un millón, y la búsqueda lineal crece en proporción al catálogo. La lineal sigue siendo necesaria cuando buscas por parte del nombre, como en `search_by_name`, porque un diccionario solo encuentra la llave exacta.
+3. Que ningún test revisa la regla que esa versión rompe. Hace falta un caso concreto que la exponga, por ejemplo un monto que termine en `.5` o un cupón cuyo descuento pase el tope.
+4. Respuesta personal. Debe mencionar los centavos enteros, el redondeo half-up, el tope del cupón y la normalización de texto en la búsqueda.

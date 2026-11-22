@@ -28,9 +28,10 @@ Toda aplicación de negocio depende de un esquema relacional sano y de consultas
 
 ## Al terminar
 
-1. ¿Qué integridad garantiza una llave foránea junto con un constraint `CHECK` en PostgreSQL frente a validar solo en Python? (Pista, revisa `db/migrations/001_init.sql` y `diagrams/db-schema.svg`.)
-2. ¿Por qué concatenar entrada del usuario en un f-string de SQL abre una vulnerabilidad de inyección SQL y cómo la bloquean los parámetros `%s`? (Pista, revisa `find_orders_by_sku()` en `backend/tiendita/repositories/orders_repo.py`.)
-3. ¿Por qué conviene excluir pedidos cancelados dentro de las consultas de reportes en lugar de filtrar en memoria después? (Pista, revisa `example/guided_joins_and_groupby.sql`.)
+1. Un pedido de marzo pasa de `paid` a `cancelled`. ¿Qué número cambia en tu reporte mensual y por qué conviene que el filtro viva en el SQL?
+2. Un compañero propone quitar las comillas de la entrada en Python en lugar de usar `%s`. ¿Qué le responderías?
+3. `top_products` se vuelve lento cuando `order_items` llega a millones de filas. ¿Qué índice probarías y cómo comprobarías que PostgreSQL lo usa?
+4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -38,6 +39,7 @@ Levanta la base de datos local con `make db-up` y ejecuta `make check STEP=3`. A
 
 ## Respuestas de autoevaluación
 
-1. PostgreSQL aplica las llaves foráneas y los constraints `CHECK` en cada escritura sin importar qué servicio, script o migración toque la tabla. Así impide registros huérfanos o stock negativo incluso cuando falla una validación en la capa de aplicación.
-2. Un f-string mezcla datos con instrucciones SQL, permitiendo que un texto como `' OR '1'='1` altere la cláusula `WHERE` y exponga filas ajenas. Al pasar parámetros `%s`, el driver envía la plantilla SQL y los valores por separado, de modo que PostgreSQL trata la entrada únicamente como texto literal.
-3. Filtrar en el `WHERE` antes de agrupar reduce las filas que la base de datos lee, une y transfiere por red, y evita que un olvido en el código consumidor infle ingresos o unidades vendidas con pedidos cancelados.
+1. Bajan `order_count` y `revenue_cents` de marzo. Con el filtro en el SQL, cualquier persona o reporte que corra la consulta obtiene la misma cifra, sin depender de que alguien recuerde filtrar después en Python.
+2. Que limpiar a mano siempre deja casos fuera (otras comillas, codificaciones, comentarios SQL). Con `%s`, psycopg manda el valor separado del texto de la consulta y PostgreSQL nunca lo interpreta como SQL.
+3. Un índice sobre `order_items(product_id)` o sobre `order_items(order_id)`, según el plan. Se comprueba con `EXPLAIN ANALYZE` antes y después: el plan debe pasar de `Seq Scan` a un `Index Scan` o `Bitmap Index Scan`.
+4. Respuesta personal. Debe mencionar el filtro de cancelados, los parámetros `%s` y el `GROUP BY` de cada reporte.
