@@ -1,4 +1,4 @@
-name: Step 1 - Flujo de trabajo
+name: Paso 1 - Terminal, Git y flujo de trabajo
 
 on:
   push:

@@ -41,7 +41,7 @@ migrate:
 	@uv run python db/load.py --seed
 
 dev-api:
-	@uv run uvicorn tiendita.api.app:app --app-dir backend --reload --port 8000
+	@TIENDITA_DEV_AUTH=1 uv run uvicorn tiendita.api.app:app --app-dir backend --reload --port 8000
 
 dev-web:
 	@cd frontend && npm run dev

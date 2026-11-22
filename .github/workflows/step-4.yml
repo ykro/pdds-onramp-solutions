@@ -1,4 +1,4 @@
-name: Step 4 - Arquitectura y API
+name: Paso 4 - API REST, capas y autorización
 
 on:
   push:

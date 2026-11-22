@@ -1,4 +1,4 @@
-name: Step 5 - React y deploy
+name: Paso 5 - React y TypeScript
 
 on:
   push:

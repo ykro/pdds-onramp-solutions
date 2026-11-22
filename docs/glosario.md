@@ -69,3 +69,11 @@ El lenguaje para consultar y modificar bases de datos relacionales ([PostgreSQL:
 ## Test automatizado
 
 Código que ejecuta otra parte del código y comprueba el resultado. Pasa en verde cuando el comportamiento es el esperado y se pone en rojo cuando algo se rompe. En Tiendita los tests de Python corren con `pytest` y los de React con `vitest`.
+
+## Para leer más
+
+- Paso 1: [MIT The Missing Semester](https://missing.csail.mit.edu/) y [Pro Git](https://git-scm.com/book/es/v2).
+- Paso 2: [Problem Solving with Algorithms and Data Structures using Python](https://runestone.academy/ns/books/published/pythonds3/index.html) y [pytest](https://docs.pytest.org/).
+- Paso 3: [documentación de PostgreSQL](https://www.postgresql.org/docs/current/), [Use The Index, Luke](https://use-the-index-luke.com/) y [CMU 15-445](https://15445.courses.cs.cmu.edu/).
+- Paso 4: [Architecture Patterns with Python](https://www.cosmicpython.com/book/preface.html), [MDN HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP), [FastAPI](https://fastapi.tiangolo.com/) y [RFC 8725](https://datatracker.ietf.org/doc/html/rfc8725) sobre JWT.
+- Paso 5: [Thinking in React](https://react.dev/learn/thinking-in-react), [Full Stack Open](https://fullstackopen.com/en/) y el [TypeScript Handbook](https://www.typescriptlang.org/docs/handbook/intro.html).

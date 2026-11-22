@@ -19,6 +19,9 @@ def test_ca_2_1_pricing_exact_cents_and_coupon_cap() -> None:
     assert pricing.round_half_up_percent(104, 10) == 10, (
         "CA-2.1: 10% de 104 centavos debe devolver 10."
     )
+    assert pricing.round_half_up_percent(10**17 + 5, 10) == 10**16 + 1, (
+        "CA-2.1: usa solo int; con float se pierden centavos en montos grandes."
+    )
 
     items = [
         pricing.CartItem(sku="SKU-001", unit_price_cents=18500, quantity=2, available_stock=5),

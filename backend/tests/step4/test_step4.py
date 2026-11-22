@@ -1,11 +1,13 @@
-"""Step 4 automated checks (CA-4.1, CA-4.2, CA-4.3): layers, authz bugfix, and new endpoint."""
+"""Step 4 automated checks (CA-4.1 to CA-4.4): authz bugfix, new endpoint, service layer and ADR."""
 
 from __future__ import annotations
 
 import json
+import re
 import threading
 import time
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from pathlib import Path
 from typing import Any
 
 import jwt
@@ -145,9 +147,25 @@ def test_ca_4_2_get_product_by_sku_across_layers() -> None:
     )
 
 
-def test_ca_4_3_openapi_includes_new_product_endpoint() -> None:
-    app = create_app()
-    paths = set(app.openapi()["paths"].keys())
-    assert "/api/products/{sku}" in paths, (
-        "CA-4.3: Falta registrar GET /api/products/{sku} en backend/tiendita/api/app.py."
+def test_ca_4_3_service_raises_key_error_without_http() -> None:
+    service = StoreService(_FakeRepo())
+    assert service.get_product("SKU-001")["sku"] == "SKU-001", (
+        "CA-4.3: StoreService.get_product('SKU-001') debe devolver el producto."
     )
+    with pytest.raises(KeyError):
+        service.get_product("SKU-NO-EXISTE")
+
+
+ADR_DIR = Path(__file__).resolve().parents[3] / "docs" / "adr"
+ADR_SECTIONS = ("contexto", "decisi[oó]n", "alternativas descartadas", "consecuencias")
+
+
+def test_ca_4_4_adr_has_four_sections() -> None:
+    adrs = sorted(ADR_DIR.glob("0001-*.md"))
+    assert adrs, "CA-4.4: Falta tu ADR en docs/adr/0001-<tema>.md (modelo en examples/adr.md)."
+    text = adrs[0].read_text(encoding="utf-8").lower()
+    for section in ADR_SECTIONS:
+        assert re.search(rf"^(#+\s*|[-*]\s*\*\*){section}", text, re.MULTILINE), (
+            f"CA-4.4: {adrs[0].name} necesita un encabezado '{section}' "
+            "(contexto, decisión, alternativas descartadas y consecuencias)."
+        )

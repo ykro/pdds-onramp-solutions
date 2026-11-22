@@ -27,14 +27,14 @@ def _check_postgres(db_url: str) -> None:
         with socket.create_connection((host, port), timeout=1.5):
             print(f"[OK]    PostgreSQL responde en {host}:{port}")
     except OSError:
-        print(f"[AVISO] PostgreSQL no responde en {host}:{port}. Para Pasos 3 y 4 corre: make db-up")
+        print(f"[AVISO] PostgreSQL no responde en {host}:{port}. Para Pasos 3 y 5 corre: make db-up")
 
 
 def _check_docker() -> None:
-    """Docker solo hace falta para `make db-up` en los Pasos 3 y 4."""
+    """Docker solo hace falta para `make db-up` en los Pasos 3 y 5."""
     if not shutil.which("docker"):
         print(
-            "[AVISO] Docker no está instalado. Lo necesitas en los Pasos 3 y 4 para levantar "
+            "[AVISO] Docker no está instalado. Lo necesitas en los Pasos 3 y 5 para levantar "
             "PostgreSQL con make db-up. Instala Docker Desktop desde "
             "https://www.docker.com/products/docker-desktop/ o usa GitHub Codespaces, que ya lo trae."
         )
@@ -66,7 +66,7 @@ def main() -> int:
         print("[OK]    DATABASE_URL definida")
         _check_postgres(db_url)
     else:
-        print("[AVISO] DATABASE_URL no está definida (necesaria en Pasos 3 y 4). Copia .env.example a .env y corre make db-up.")
+        print("[AVISO] DATABASE_URL no está definida (necesaria en Pasos 3 y 5). Copia .env.example a .env y corre make db-up.")
 
     try:
         res = subprocess.run(

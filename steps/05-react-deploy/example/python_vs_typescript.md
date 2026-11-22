@@ -1,6 +1,6 @@
 # De Python a TypeScript antes de entrar a React
 
-En los pasos 2 a 4 escribiste Python con type hints y Pydantic. TypeScript aplica la misma disciplina sobre JavaScript, verificando los tipos antes de ejecutar el código en el navegador. Esta tabla compara las piezas que usarás todos los días en Tiendita.
+Si hiciste los pasos 2 a 4, ya escribiste Python con type hints y Pydantic. TypeScript aplica la misma disciplina sobre JavaScript, verificando los tipos antes de ejecutar el código en el navegador. Esta tabla compara las piezas que usarás todos los días en Tiendita.
 
 ## 1. Modelos de datos y tipos
 

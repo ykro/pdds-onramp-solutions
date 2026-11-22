@@ -96,6 +96,8 @@ describe('ca_5_2 App vistas y flujo principal', () => {
     await user.click(addButtons[0]);
     expect(screen.getByTestId('cart-count')).toHaveTextContent('Carrito: 1');
     expect(screen.getByTestId('cart-total')).toHaveTextContent('Q 45.50');
+    // CA-5.3: el aviso de envío gratis aparece en el catálogo, junto al total.
+    expect(screen.getByText(/te faltan q 254\.50/i)).toBeInTheDocument();
 
     await user.click(screen.getByRole('button', { name: 'Pagar' }));
 

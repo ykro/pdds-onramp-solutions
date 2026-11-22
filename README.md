@@ -12,13 +12,13 @@ Este repositorio contiene las soluciones completas, limpias y verificadas de [yk
 
 ## Los 5 pasos (independientes)
 
-| Paso | Enfoque | Guía y respuestas |
-| --- | --- | --- |
-| Paso 1 | Flujo de trabajo, logs, Pull Requests y code review | [steps/01-terminal-git/README.md](steps/01-terminal-git/README.md) |
-| Paso 2 | Reglas de negocio, estructuras de datos, debugging y testing | [steps/02-rules-algorithms/README.md](steps/02-rules-algorithms/README.md) |
-| Paso 3 | Modelo relacional, consultas SQL y prevención de inyección SQL | [steps/03-sql/README.md](steps/03-sql/README.md) |
-| Paso 4 | Arquitectura por capas, cliente-servidor, API REST y autorización | [steps/04-api-auth/README.md](steps/04-api-auth/README.md) |
-| Paso 5 | Frontend en React conectado al API y deploy en Vercel y Neon | [steps/05-react-deploy/README.md](steps/05-react-deploy/README.md) |
+| Paso | Enfoque | Tiempo | Guía y respuestas |
+| --- | --- | --- | --- |
+| Paso 1 | Terminal, Git y flujo de trabajo | 60 min | [steps/01-terminal-git/README.md](steps/01-terminal-git/README.md) |
+| Paso 2 | Reglas de negocio y algoritmos | 75 min | [steps/02-rules-algorithms/README.md](steps/02-rules-algorithms/README.md) |
+| Paso 3 | SQL, modelado y seguridad de consultas | 75 min | [steps/03-sql/README.md](steps/03-sql/README.md) |
+| Paso 4 | API REST, capas y autorización | 60 min | [steps/04-api-auth/README.md](steps/04-api-auth/README.md) |
+| Paso 5 | React y TypeScript | 60 min | [steps/05-react-deploy/README.md](steps/05-react-deploy/README.md) |
 
 ## Dónde ver la solución de cada problema
 
@@ -30,12 +30,13 @@ Este repositorio contiene las soluciones completas, limpias y verificadas de [yk
 | Paso 2 | Corrección de búsqueda por nombre con tildes y espacios (`CA-2.2`) | [backend/tiendita/catalog.py](backend/tiendita/catalog.py) |
 | Paso 2 | Tres tests con `pytest` sobre reglas de negocio (`CA-2.3`) | [backend/tests/step2/test_student_pricing.py](backend/tests/step2/test_student_pricing.py) |
 | Paso 3 | Consultas de ventas por mes y top 5 de productos (`CA-3.1`, `CA-3.2`) | [db/queries/monthly_sales.sql](db/queries/monthly_sales.sql) y [db/queries/top_products.sql](db/queries/top_products.sql) |
-| Paso 3 | Consulta parametrizada contra inyección SQL y pedidos cancelados (`CA-3.3`) | [backend/tiendita/repositories/orders_repo.py](backend/tiendita/repositories/orders_repo.py) |
+| Paso 3 | SKU como parámetro, fuera del texto SQL, y sin pedidos cancelados (`CA-3.3`) | [backend/tiendita/repositories/orders_repo.py](backend/tiendita/repositories/orders_repo.py) |
 | Paso 4 | Corrección de fuga de autorización en pedidos (`CA-4.1`) | [backend/tiendita/services/store_service.py](backend/tiendita/services/store_service.py) |
 | Paso 4 | Endpoint `GET /api/products/{sku}` a través de las 3 capas (`CA-4.2`, `CA-4.3`) | [backend/tiendita/api/app.py](backend/tiendita/api/app.py), [backend/tiendita/services/store_service.py](backend/tiendita/services/store_service.py) y [backend/tiendita/repositories/orders_repo.py](backend/tiendita/repositories/orders_repo.py) |
-| Paso 5 | Corrección de `totalCents` en el carrito y deploy en producción (`CA-5.1` a `CA-5.3`) | [frontend/src/hooks/useCart.ts](frontend/src/hooks/useCart.ts), [vercel.json](vercel.json) y [deploy.json](deploy.json) |
+| Paso 4 | ADR sobre dónde vive la autorización (`CA-4.4`) | [docs/adr/0001-autorizacion-en-servicio.md](docs/adr/0001-autorizacion-en-servicio.md) |
+| Paso 5 | Corrección de `totalCents` en el carrito, `freeShippingRemainingCents` y el aviso de envío gratis en el catálogo (`CA-5.1` a `CA-5.3`); deploy opcional | [frontend/src/hooks/useCart.ts](frontend/src/hooks/useCart.ts), [frontend/src/views/FreeShippingNotice.tsx](frontend/src/views/FreeShippingNotice.tsx), [frontend/src/views/CatalogView.tsx](frontend/src/views/CatalogView.tsx), [vercel.json](vercel.json) y [deploy.json](deploy.json) |
 
-Las respuestas a las tres preguntas de autoevaluación de cada paso viven al final de su `README.md` correspondiente.
+Las respuestas a las preguntas de autoevaluación de cada paso viven al final de su `README.md` correspondiente.
 
 ## Cómo debería verse Tiendita
 

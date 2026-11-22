@@ -6,19 +6,26 @@ Este paso toma unos 75 minutos.
 
 ## Antes de empezar
 
-1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
-2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos? (Pista, ejecuta `make bench` y lee `backend/tiendita/search.py`.)
-3. ¿Qué ventaja da escribir pruebas automatizadas sobre edge cases de negocio antes de tocar una base de datos o un servidor web? (Pista, revisa `backend/tests/step2/test_student_pricing.py`.)
+1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea?
+2. ¿Cómo cambia el tiempo de respuesta de una búsqueda lineal frente a un diccionario cuando el catálogo crece de 1,000 a 100,000 productos?
+3. ¿Qué ventaja da escribir pruebas automatizadas sobre edge cases de negocio antes de tocar una base de datos o un servidor web?
 
 ## Por qué importa
 
-Los bugs más caros en producción suelen vivir en reglas de negocio pequeñas y en estructuras de datos mal elegidas para el tamaño real del sistema. Comprender complejidad algorítmica como explican [Problem Solving with Algorithms and Data Structures using Python](https://runestone.academy/ns/books/published/pythonds3/index.html) y *Grokking Algorithms* (Bhargava) te ayuda a evaluar decisiones de rendimiento con datos medidos. A la vez, mantener módulos simples como plantea *A Philosophy of Software Design* (Ousterhout) y validarlos con [pytest](https://docs.pytest.org/) permite cambiar reglas sin romper cálculos existentes.
+En el posgrado revisarás reglas de negocio escritas por otros y por asistentes de IA, y decidirás qué estructura de datos aguanta el tamaño real del sistema. Si no sabes escribir un test que exponga un bug, apruebas código que cobra mal.
+
+## Lo mínimo que necesitas saber
+
+- **Dinero en centavos enteros.** Un `float` no puede guardar exactamente valores como `0.1`; prueba `0.1 + 0.2` en `uv run python`. Por eso Tiendita guarda los montos como `int` en centavos (`Q 12.50` es `1250`) y redondea con una regla explícita.
+- **Half-up.** La regla del negocio dice que `.5` siempre sube: 10.5 centavos se cobran como 11. La función `round()` de Python no sigue esa regla (prueba `round(10.5)` y `round(11.5)`), así que no sirve para este caso.
+- **Complejidad.** Buscar en una lista revisa los elementos uno por uno; con el doble de productos tarda el doble, y se escribe `O(n)`. Un diccionario encuentra la llave casi en el mismo tiempo con mil o con un millón de productos, `O(1)` en promedio. `make bench` te lo muestra con números.
+- **Un test.** Una función `test_*` que prepara datos, llama al código y revisa el resultado con `assert` (preparar, actuar, comprobar). `pytest.raises(Error)` comprueba que el código lance un error esperado.
 
 ## Qué vas a hacer
 
 - **Leer**. Corre `make bench` y lee `scripts/bench_search.py` junto con `backend/tiendita/search.py` para observar cómo escala una búsqueda lineal frente a un diccionario al pasar de 1,000 a 100,000 productos.
-- **Debuguear**. Corre `make check STEP=2` y lee los síntomas. Un descuento de 10 % sobre 105 centavos devuelve 10 y el negocio espera 11. Un cupón con tope descuenta más que su tope. Y `search_by_name` no encuentra `"  pantalón   chino "` aunque el producto existe. Encuentra la causa de cada uno en `backend/tiendita/pricing.py` y `backend/tiendita/catalog.py` antes de cambiar código.
-- **Escribir**. Agrega al menos tres pruebas reales en `backend/tests/step2/test_student_pricing.py` para cubrir redondeo half-up, tope de cupón y `OutOfStockError`.
+- **Debuguear**. Un asistente de IA escribió `pricing.py` y pasó una revisión apurada. Corre `make check STEP=2` y lee los síntomas. Un descuento de 10 % sobre 105 centavos devuelve 10 y el negocio espera 11. Un cupón con tope descuenta más que su tope. Y `search_by_name` no encuentra `"  pantalón   chino "` aunque el producto existe. Encuentra la causa de cada uno en `backend/tiendita/pricing.py` y `backend/tiendita/catalog.py` antes de cambiar código.
+- **Escribir**. Agrega al menos tres pruebas reales en `backend/tests/step2/test_student_pricing.py` para cubrir redondeo half-up, tope de cupón y `OutOfStockError` (esta excepción ya existe en `pricing.py`; solo hay que probarla).
 
 ## Criterios de aceptación
 
@@ -29,9 +36,8 @@ Los bugs más caros en producción suelen vivir en reglas de negocio pequeñas y
 ## Al terminar
 
 1. Un cupón de 50 % se aplica a un producto de 5 centavos. ¿Cuánto descuento da tu `round_half_up_percent` y cuánto daba la versión con `float` y `round()`?
-2. Si el catálogo llega a un millón de productos, ¿qué esperas de la búsqueda lineal frente al diccionario según lo que mediste con `make bench`? ¿En qué caso la búsqueda lineal sigue siendo necesaria?
-3. `make check STEP=2` corre tus tests contra versiones con un bug. Si una de esas versiones queda en verde, ¿qué te dice de tus tests?
-4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
+2. Escribe el comentario bloqueante que le dejarías al asistente que escribió `pricing.py` por el bug del tope del cupón. Revísalo con la rúbrica de [code-review.md](../../examples/code-review.md).
+3. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -40,6 +46,5 @@ Ejecuta `make check STEP=2` para validar los tres criterios y corre `make bench`
 ## Respuestas de autoevaluación
 
 1. Tu versión devuelve 3 centavos (`(5 * 50 + 50) // 100`). La versión con `round()` devolvía 2, porque `round(2.5)` redondea al par más cercano.
-2. El diccionario responde casi igual de rápido con mil o con un millón, y la búsqueda lineal crece en proporción al catálogo. La lineal sigue siendo necesaria cuando buscas por parte del nombre, como en `search_by_name`, porque un diccionario solo encuentra la llave exacta.
-3. Que ningún test revisa la regla que esa versión rompe. Hace falta un caso concreto que la exponga, por ejemplo un monto que termine en `.5` o un cupón cuyo descuento pase el tope.
-4. Respuesta personal. Debe mencionar los centavos enteros, el redondeo half-up, el tope del cupón y la normalización de texto en la búsqueda.
+2. Un ejemplo: «**Bloqueante, corrección.** En `backend/tiendita/pricing.py`, el descuento del cupón no se limita a `max_discount_cents`, así que un cupón de 50 % con tope de Q 10 descuenta Q 25 en un producto de Q 50. El negocio pierde dinero en cada venta grande. Propongo `min(descuento, tope)` y un test con ese caso. El redondeo en centavos enteros quedó bien resuelto». Cumple la rúbrica si dice dónde, qué tan grave es, qué impacto tiene, qué hacer y con qué tono.
+3. Respuesta personal. Debe mencionar los centavos enteros, el redondeo half-up, el tope del cupón y la normalización de texto en la búsqueda.

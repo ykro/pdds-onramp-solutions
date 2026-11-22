@@ -47,8 +47,8 @@ jobs:
               gh issue create --title "$title" --body "$body"
             fi
           }
-          create_if_missing "Paso 1: Flujo de trabajo, logs y code review" "Ver steps/01-terminal-git/README.md (CA-1.1 a CA-1.3)."
-          create_if_missing "Paso 2: Lógica, estructuras de datos y testing" "Ver steps/02-rules-algorithms/README.md (CA-2.1 a CA-2.3)."
-          create_if_missing "Paso 3: Base de datos relacional y consultas SQL" "Ver steps/03-sql/README.md (CA-3.1 a CA-3.3)."
-          create_if_missing "Paso 4: Arquitectura por capas, API y autenticación" "Ver steps/04-api-auth/README.md (CA-4.1 a CA-4.3)."
-          create_if_missing "Paso 5: Frontend conectado y deploy en producción" "Ver steps/05-react-deploy/README.md (CA-5.1 a CA-5.3)."
+          create_if_missing "Paso 1: Terminal, Git y flujo de trabajo" "Ver steps/01-terminal-git/README.md (CA-1.1 a CA-1.3)."
+          create_if_missing "Paso 2: Reglas de negocio y algoritmos" "Ver steps/02-rules-algorithms/README.md (CA-2.1 a CA-2.3)."
+          create_if_missing "Paso 3: SQL, modelado y seguridad de consultas" "Ver steps/03-sql/README.md (CA-3.1 a CA-3.3)."
+          create_if_missing "Paso 4: API REST, capas y autorización" "Ver steps/04-api-auth/README.md (CA-4.1 a CA-4.4)."
+          create_if_missing "Paso 5: React y TypeScript" "Ver steps/05-react-deploy/README.md (CA-5.1 a CA-5.3)."

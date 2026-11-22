@@ -44,6 +44,23 @@ def verify_jwt_token(
     return dict(payload)
 
 
+DEV_TOKEN_PREFIX = "dev-token:"
+
+
+def _local_dev_user(token: str, jwks_url: str) -> str | None:
+    """Accept the frontend's local sign-in token, only in local development.
+
+    `make dev-api` sets TIENDITA_DEV_AUTH=1. Production never sets it and
+    always has NEON_AUTH_JWKS_URL, so this path stays closed there.
+    """
+    if jwks_url or os.environ.get("TIENDITA_DEV_AUTH") != "1":
+        return None
+    if not token.startswith(DEV_TOKEN_PREFIX):
+        return None
+    email = token.removeprefix(DEV_TOKEN_PREFIX).strip().lower()
+    return f"local-{email}" if "@" in email else None
+
+
 def get_current_user_id(
     credentials: HTTPAuthorizationCredentials | None = Depends(security),
 ) -> str:
@@ -58,6 +75,9 @@ def get_current_user_id(
     jwks_url = os.environ.get("NEON_AUTH_JWKS_URL", "")
     issuer = os.environ.get("JWT_ISSUER") or None
     audience = os.environ.get("JWT_AUDIENCE") or None
+    local_user = _local_dev_user(credentials.credentials, jwks_url)
+    if local_user:
+        return local_user
     if not jwks_url:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

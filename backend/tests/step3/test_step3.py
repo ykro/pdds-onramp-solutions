@@ -74,17 +74,51 @@ def test_ca_3_2_top_products_query(seeded_db: psycopg.Connection[Any]) -> None:
     )
 
 
+class _SpyConnection:
+    """Wrap the real connection and record the SQL text each execute() receives."""
+
+    def __init__(self, conn: psycopg.Connection[Any]) -> None:
+        self._conn = conn
+        self.sql: list[str] = []
+
+    def cursor(self, *args: Any, **kwargs: Any) -> Any:
+        spy = self
+        real = self._conn.cursor(*args, **kwargs)
+
+        class _Cursor:
+            def __enter__(self) -> Any:
+                real.__enter__()
+                return self
+
+            def __exit__(self, *exc: Any) -> Any:
+                return real.__exit__(*exc)
+
+            def execute(self, query: Any, params: Any = None, **kw: Any) -> Any:
+                spy.sql.append(str(query))
+                return real.execute(query, params, **kw)
+
+            def __getattr__(self, name: str) -> Any:
+                return getattr(real, name)
+
+        return _Cursor()
+
+
 def test_ca_3_3_find_orders_blocks_sql_injection_and_cancelled(
     seeded_db: psycopg.Connection[Any],
 ) -> None:
-    active_rows = orders_repo.find_orders_by_sku(seeded_db, "SKU-001")
+    spy = _SpyConnection(seeded_db)
+    active_rows = orders_repo.find_orders_by_sku(spy, "SKU-001")  # type: ignore[arg-type]
     assert len(active_rows) > 0, (
         "CA-3.3: find_orders_by_sku debe devolver pedidos activos para SKU-001."
     )
     assert all(r["status"] != "cancelled" for r in active_rows), (
         "CA-3.3: find_orders_by_sku devolvió pedidos que el negocio ya no cuenta. Revisa su estado."
     )
-    injected = orders_repo.find_orders_by_sku(seeded_db, "' OR '1'='1")
+    assert spy.sql and all("SKU-001" not in sql for sql in spy.sql), (
+        "CA-3.3: el SKU aparece pegado dentro del texto SQL. Pásalo aparte como parámetro (%s); "
+        "escapar comillas no basta."
+    )
+    injected = orders_repo.find_orders_by_sku(spy, "' OR '1'='1")  # type: ignore[arg-type]
     assert injected == [], (
         "CA-3.3: find_orders_by_sku es vulnerable a inyección SQL. Usa parámetros (%s) en lugar de f-strings."
     )

@@ -6,16 +6,19 @@ Este paso toma unos 60 minutos.
 
 ## Antes de empezar
 
-1. ¿Para qué sirve el código de salida (`exit code`) de un script en la terminal cuando forma parte de un pipeline de automatización? (Pista, revisa `scripts/log_report.sh` y `example/intro-terminal.md`.)
-2. ¿Por qué conviene separar un cambio en una rama nueva y abrir un Pull Request en lugar de empujar commits directo a `main`? (Pista, revisa `diagrams/git-flow.svg` y `examples/code-review.md`.)
-3. ¿Qué diferencia a una historia de usuario verificable de una petición ambigua cuando un equipo planea un cambio? (Pista, revisa `docs/stories/001-order-history.md`.)
+1. Abre `.github/workflows/step-1.yml`: ¿qué comando corre y qué lo pone en rojo?
+2. ¿Por qué conviene separar un cambio en una rama nueva y abrir un Pull Request en lugar de empujar commits directo a `main`?
+3. ¿Qué diferencia a una historia de usuario verificable de una petición ambigua cuando un equipo planea un cambio?
 
 ## Por qué importa
 
-Quien lidera equipos técnicos necesita leer scripts de operación en minutos, detectar dónde fallan y revisar cambios con criterio en un Pull Request. Dominar la línea de comandos como propone [MIT The Missing Semester](https://missing.csail.mit.edu/) y manejar ramas limpias según [Pro Git](https://git-scm.com/book/en/v2) te da control sobre cualquier repositorio. Además, los hábitos de automatización y pruebas repetibles de *The Pragmatic Programmer* (Thomas y Hunt) convierten tareas manuales frágiles en herramientas confiables.
+En el posgrado entregarás cada proyecto en un Pull Request, y el CI decidirá si pasa. Si no sabes leer un script ni por qué un job quedó en rojo, perderás horas en lo que no es el curso.
 
-## Lo mínimo de git que necesitas
+## Lo mínimo que necesitas saber
 
+- **Terminal.** `cd carpeta` entra a una carpeta, `ls` lista lo que hay y `cat archivo` muestra su contenido. Un script se corre con `./script.sh argumento` si tiene permiso de ejecución (`chmod +x`).
+- **Salida y errores.** Un programa escribe resultados en la salida estándar y errores en la de errores (`>&2` en bash), y termina con un código: `0` si todo salió bien y otro número si falló. `echo $?` muestra el código del último comando, y CI usa ese código para decidir si un paso pasa.
+- **Columnas con `awk`.** `awk '{print $3}' archivo` imprime la tercera columna de cada línea, separada por espacios. Es la herramienta que usa `log_report.sh` para leer `data/access.log`.
 - **Commit.** Una foto del proyecto con un mensaje que explica el cambio. `git add archivo` elige qué entra en la foto y `git commit -m "mensaje"` la toma.
 - **Rama.** Una línea de trabajo aparte. `git switch -c fix/step-1-log-report` crea una rama y te mueve a ella; tus commits no tocan `main` hasta que alguien los acepte.
 - **Push.** `git push -u origin fix/step-1-log-report` sube tu rama a GitHub. La primera vez, `-u` conecta tu rama local con la remota.
@@ -34,14 +37,13 @@ Quien lidera equipos técnicos necesita leer scripts de operación en minutos, d
 
 - `CA-1.1` `scripts/log_report.sh` tiene permiso de ejecución (`+x`). Si no recibe argumento o el archivo no existe, imprime en stderr `Error: log file not found: <archivo>` y sale con código `1`. Si el archivo existe, sale con código `0`.
 - `CA-1.2` `scripts/log_report.sh data/access.log` imprime `total_requests`, `errors_5xx` y `top_endpoints` con los conteos exactos del log.
-- `CA-1.3` `docs/stories/001-order-history.md` cumple la estructura Como / Quiero / Para e incluye al menos dos criterios con Dado / Cuando / Entonces.
+- `CA-1.3` `docs/stories/001-order-history.md` cumple la estructura Como / Quiero / Para e incluye al menos dos criterios, cada uno en una línea con Dado, Cuando y Entonces en ese orden. El check solo revisa esas palabras; el contenido lo revisas tú con [examples/historia-y-pr.md](../../examples/historia-y-pr.md).
 
 ## Al terminar
 
 1. `log_report.sh` corre cada noche en un job de CI y una noche el archivo no existe. ¿Qué pasa con el pipeline si el script sale con `0` y qué pasa si sale con `1`?
-2. Alguien aprueba tu PR sin correr el script. ¿Qué evidencia le pedirías en el code review, según la rúbrica de `examples/code-review.md`?
-3. Escribe un criterio Dado / Cuando / Entonces para "el reporte ignora las líneas vacías del log". ¿Cómo lo comprobarías con un test?
-4. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
+2. Escribe un criterio Dado / Cuando / Entonces para "el reporte ignora las líneas vacías del log". ¿Cómo lo comprobarías con un test?
+3. Explica en tres líneas, con tus palabras, qué cambiaste y por qué. Si no puedes, vuelve a la pista 1 antes de seguir.
 
 ## Cómo verificar
 
@@ -50,6 +52,5 @@ Ejecuta `make check STEP=1` desde la raíz del repositorio para validar los tres
 ## Respuestas de autoevaluación
 
 1. Con `0`, el pipeline sigue en verde y publica un reporte vacío; nadie se entera hasta que alguien lo lee. Con `1`, el job queda en rojo y avisa esa misma noche.
-2. La salida real del script con `data/access.log`, la prueba con un archivo inexistente que muestre `exit=1`, y un diff que solo toque el patrón de `5xx` y la validación del archivo.
-3. Dado un log con una línea vacía al final, Cuando corro `log_report.sh`, Entonces `total_requests` no cuenta esa línea. El test crea un archivo temporal con esa línea y compara el conteo contra el mismo log sin ella.
-4. Respuesta personal. Debe mencionar el código de salida para el archivo faltante y el patrón que ahora cuenta solo los códigos que empiezan con 5.
+2. Dado un log con una línea vacía al final, Cuando corro `log_report.sh`, Entonces `total_requests` no cuenta esa línea. El test crea un archivo temporal con esa línea y compara el conteo contra el mismo log sin ella.
+3. Respuesta personal. Debe mencionar el código de salida para el archivo faltante y el patrón que ahora cuenta solo los códigos que empiezan con 5.

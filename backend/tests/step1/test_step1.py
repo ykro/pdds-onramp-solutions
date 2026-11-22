@@ -69,9 +69,11 @@ def test_ca_1_3_user_story_complete() -> None:
         assert re.search(rf"\b{keyword}\b", text), (
             f"CA-1.3: La historia de usuario necesita '{keyword}' (formato Como / Quiero / Para)."
         )
-    given_n = len(re.findall(r"\bdado\b", text))
-    when_n = len(re.findall(r"\bcuando\b", text))
-    then_n = len(re.findall(r"\bentonces\b", text))
-    assert min(given_n, when_n, then_n) >= 2, (
-        "CA-1.3: Incluye al menos dos criterios con Dado / Cuando / Entonces."
+    criteria = [line for line in text.splitlines() if re.search(r"\bdado\b", line)]
+    ordered = [
+        line for line in criteria if re.search(r"\bdado\b.*\bcuando\b.*\bentonces\b", line)
+    ]
+    assert len(ordered) >= 2 and len(ordered) == len(criteria), (
+        "CA-1.3: Escribe al menos dos criterios, y cada uno en una línea con Dado, Cuando y "
+        "Entonces en ese orden."
     )

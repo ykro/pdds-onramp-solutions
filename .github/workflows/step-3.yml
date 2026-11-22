@@ -1,4 +1,4 @@
-name: Step 3 - Base de datos y SQL
+name: Paso 3 - SQL, modelado y seguridad de consultas
 
 on:
   push:

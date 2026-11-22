@@ -6,7 +6,7 @@
 ## Criterios de aceptación verificados
 
 - [ ] `make check STEP=N` en verde
-- [ ] `make self-check STEP=N` completado
+- [ ] `make check STEP=N` completado
 
 ## Notas de revisión
 
