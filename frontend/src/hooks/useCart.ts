@@ -6,6 +6,8 @@ export interface CartItem {
   quantity: number;
 }
 
+export const FREE_SHIPPING_CENTS = 30000;
+
 export function formatQuetzales(cents: number): string {
   const safe = Math.max(0, Math.round(cents));
   return `Q ${(safe / 100).toFixed(2)}`;
@@ -63,10 +65,13 @@ export function useCart() {
     [items],
   );
 
+  const freeShippingRemainingCents = Math.max(0, FREE_SHIPPING_CENTS - totalCents);
+
   return {
     items,
     itemCount,
     totalCents,
+    freeShippingRemainingCents,
     formattedTotal: formatQuetzales(totalCents),
     addItem,
     removeItem,

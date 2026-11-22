@@ -1,74 +1,40 @@
-"""Ejemplo resuelto para el Paso 2.
+"""Ejemplo de una regla de negocio pura y sus tests con pytest.
 
-Muestra cómo modelar reglas de precios usando enteros en centavos (`int`),
-mantener funciones puras sin efectos secundarios y escribir pruebas con `pytest`
-capaces de atrapar errores comunes de redondeo y límites.
+La regla: el envío cuesta Q25.00 hasta 1 kg, Q40.00 hasta 5 kg y Q40.00 más Q5.00 por cada
+kilo extra (o fracción) arriba de 5 kg. Todo en centavos enteros, sin float.
 
-Ejecuta este archivo directamente con:
-    pytest steps/02-rules-algorithms/example/discount_example.py
+Corre los tests con `uv run pytest steps/02-rules-algorithms/example/discount_example.py`.
 """
-
-from dataclasses import dataclass
 
 import pytest
 
 
-@dataclass(frozen=True)
-class Coupon:
-    code: str
-    percent_off: int = 0
-    fixed_off_cents: int = 0
-    min_subtotal_cents: int = 0
+def shipping_cost_cents(weight_grams: int) -> int:
+    """Devuelve el costo de envío en centavos para un paquete de weight_grams."""
+    if weight_grams <= 0:
+        raise ValueError("weight_grams must be positive")
+    if weight_grams <= 1_000:
+        return 2_500
+    if weight_grams <= 5_000:
+        return 4_000
+    extra_grams = weight_grams - 5_000
+    extra_kilos = -(-extra_grams // 1_000)  # división entera hacia arriba
+    return 4_000 + extra_kilos * 500
 
 
-def calculate_discount_cents(subtotal_cents: int, coupon: Coupon | None) -> int:
-    """Calcula el descuento en centavos enteros sin dejar que supere el subtotal."""
-    if subtotal_cents < 0:
-        raise ValueError("El subtotal no puede ser negativo")
-    if coupon is None or subtotal_cents < coupon.min_subtotal_cents:
-        return 0
-    if not (0 <= coupon.percent_off <= 100):
-        raise ValueError("El porcentaje debe estar entre 0 y 100")
-    if coupon.fixed_off_cents < 0:
-        raise ValueError("El descuento fijo no puede ser negativo")
-
-    percent_discount = (subtotal_cents * coupon.percent_off + 50) // 100
-    raw_discount = percent_discount + coupon.fixed_off_cents
-    return min(raw_discount, subtotal_cents)
+def test_hasta_un_kilo_cuesta_la_tarifa_base() -> None:
+    assert shipping_cost_cents(1_000) == 2_500
 
 
-def calculate_total_cents(
-    subtotal_cents: int,
-    coupon: Coupon | None = None,
-    tax_percent: int = 12,
-) -> int:
-    """Aplica primero el cupón y luego calcula el impuesto sobre la base descontada."""
-    if tax_percent < 0:
-        raise ValueError("El impuesto no puede ser negativo")
-    discount = calculate_discount_cents(subtotal_cents, coupon)
-    taxable_base = subtotal_cents - discount
-    tax = (taxable_base * tax_percent + 50) // 100
-    return taxable_base + tax
+def test_un_gramo_arriba_del_limite_cambia_de_tarifa() -> None:
+    assert shipping_cost_cents(1_001) == 4_000
 
 
-def test_percent_coupon_rounds_half_up_without_float() -> None:
-    coupon = Coupon(code="DIEZ", percent_off=10)
-    # 10% de 1055 centavos = 105.5 -> redondea a 106 centavos
-    assert calculate_discount_cents(1055, coupon) == 106
+def test_cada_kilo_extra_o_fraccion_suma_cinco_quetzales() -> None:
+    assert shipping_cost_cents(5_001) == 4_500
+    assert shipping_cost_cents(7_000) == 5_000
 
 
-def test_fixed_coupon_never_produces_negative_total() -> None:
-    coupon = Coupon(code="REGALO50", fixed_off_cents=5000)
-    assert calculate_total_cents(3200, coupon=coupon, tax_percent=12) == 0
-
-
-def test_coupon_respects_exact_minimum_threshold() -> None:
-    coupon = Coupon(code="MIN1000", fixed_off_cents=200, min_subtotal_cents=1000)
-    # Si alguien cambia `<` por `<=`, este test falla de inmediato.
-    assert calculate_discount_cents(999, coupon) == 0
-    assert calculate_discount_cents(1000, coupon) == 200
-
-
-def test_negative_subtotal_raises_value_error() -> None:
+def test_peso_invalido_lanza_error() -> None:
     with pytest.raises(ValueError):
-        calculate_total_cents(-100)
+        shipping_cost_cents(0)

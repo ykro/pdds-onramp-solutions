@@ -2,6 +2,8 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+Este paso toma unos 75 minutos.
+
 ## Antes de empezar
 
 1. ¿Qué integridad garantiza una llave foránea junto con un constraint `CHECK` en PostgreSQL frente a validar solo en Python? (Pista, revisa `db/migrations/001_init.sql` y `diagrams/db-schema.svg`.)
@@ -10,12 +12,12 @@
 
 ## Por qué importa
 
-Toda aplicación de negocio depende de un esquema relacional sano y de consultas seguras que respondan con datos correctos. Conocer cómo organiza y ejecuta consultas una base de datos según [CMU 15-445](https://15445.courses.cs.cmu.edu/) y la [documentación oficial de PostgreSQL](https://www.postgresql.org/docs/current/) te permite detectar riesgos de seguridad y cuello de botella en revisiones técnicas. Complementar esa base con *Designing Data-Intensive Applications* (Kleppmann) y [Use The Index, Luke](https://use-the-index-luke.com/) da criterio sólido al auditar datos en producción.
+Toda aplicación de negocio depende de un esquema relacional sano y de consultas seguras que respondan con datos correctos. Conocer cómo organiza y ejecuta consultas una base de datos según [CMU 15-445](https://15445.courses.cs.cmu.edu/) y la [documentación oficial de PostgreSQL](https://www.postgresql.org/docs/current/) te permite detectar riesgos de seguridad y cuellos de botella en revisiones técnicas. Complementar esa base con *Designing Data-Intensive Applications* (Kleppmann) y [Use The Index, Luke](https://use-the-index-luke.com/) da criterio sólido al auditar datos en producción.
 
 ## Qué vas a hacer
 
 - **Leer**. Levanta PostgreSQL local con `make db-up` y revisa el esquema ya listo en `db/migrations/001_init.sql`, el diagrama `diagrams/db-schema.svg` y los ejemplos de joins y agrupaciones en [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql).
-- **Debuguear**. Corrige `find_orders_by_sku()` en `backend/tiendita/repositories/orders_repo.py` para reemplazar la interpolación directa por parámetros `%s` contra inyección SQL y excluir pedidos con estado `cancelled`.
+- **Debuguear**. Llama a `find_orders_by_sku()` de `backend/tiendita/repositories/orders_repo.py` con `SKU-001` y con el texto `' OR '1'='1`. En el primer caso aparecen pedidos que el negocio ya no cuenta; en el segundo, pedidos de todos los productos. Explica por qué pasa cada cosa antes de corregirla.
 - **Escribir**. Completa las consultas analíticas en `db/queries/monthly_sales.sql` y `db/queries/top_products.sql` sobre las tablas reales del esquema.
 
 ![Esquema de base de datos](diagrams/db-schema.svg)
@@ -41,5 +43,5 @@ Levanta la base de datos local con `make db-up` y ejecuta `make check STEP=3`. A
 
 1. Bajan `order_count` y `revenue_cents` de marzo. Con el filtro en el SQL, cualquier persona o reporte que corra la consulta obtiene la misma cifra, sin depender de que alguien recuerde filtrar después en Python.
 2. Que limpiar a mano siempre deja casos fuera (otras comillas, codificaciones, comentarios SQL). Con `%s`, psycopg manda el valor separado del texto de la consulta y PostgreSQL nunca lo interpreta como SQL.
-3. Un índice sobre `order_items(product_id)` o sobre `order_items(order_id)`, según el plan. Se comprueba con `EXPLAIN ANALYZE` antes y después: el plan debe pasar de `Seq Scan` a un `Index Scan` o `Bitmap Index Scan`.
+3. Primero `EXPLAIN ANALYZE` para ver dónde se va el tiempo. Como `top_products` suma todas las filas activas, PostgreSQL seguirá leyendo `order_items` completa con `Seq Scan`, y eso es lo correcto cuando necesitas casi toda la tabla. Un índice sobre `order_items(order_id)` ayuda al `JOIN` con `orders` si filtras pocos pedidos, por ejemplo un solo mes. Si el reporte sigue lento, la salida es precalcular las sumas (una vista materializada o una tabla de resumen), no otro índice.
 4. Respuesta personal. Debe mencionar el filtro de cancelados, los parámetros `%s` y el `GROUP BY` de cada reporte.

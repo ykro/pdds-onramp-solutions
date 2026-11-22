@@ -1,6 +1,6 @@
 import { act, renderHook } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
-import { formatQuetzales, useCart } from '../hooks/useCart';
+import { FREE_SHIPPING_CENTS, formatQuetzales, useCart } from '../hooks/useCart';
 import type { Product } from '../lib/api';
 
 const CAFE: Product = {
@@ -91,5 +91,22 @@ describe('ca_5_2 useCart', () => {
     expect(result.current.items).toEqual([]);
     expect(result.current.totalCents).toBe(0);
     expect(result.current.formattedTotal).toBe('Q 0.00');
+  });
+});
+
+describe('ca_5_3 envío gratis en useCart', () => {
+  it('ca_5_3 calcula cuánto falta y nunca devuelve negativos', () => {
+    const { result } = renderHook(() => useCart());
+    expect(result.current.freeShippingRemainingCents).toBe(FREE_SHIPPING_CENTS);
+
+    act(() => {
+      result.current.addItem({ ...PAN, stock: 50 });
+    });
+    expect(result.current.freeShippingRemainingCents).toBe(FREE_SHIPPING_CENTS - 1200);
+
+    act(() => {
+      result.current.updateQuantity(2, 30);
+    });
+    expect(result.current.freeShippingRemainingCents).toBe(0);
   });
 });

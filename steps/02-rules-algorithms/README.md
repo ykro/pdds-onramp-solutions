@@ -2,6 +2,8 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+Este paso toma unos 75 minutos.
+
 ## Antes de empezar
 
 1. ¿Por qué calcular precios con números de punto flotante (`float`) genera errores silenciosos en una tienda en línea? (Pista, revisa `backend/tiendita/pricing.py` y `example/discount_example.py`.)
@@ -15,7 +17,7 @@ Los bugs más caros en producción suelen vivir en reglas de negocio pequeñas y
 ## Qué vas a hacer
 
 - **Leer**. Corre `make bench` y lee `scripts/bench_search.py` junto con `backend/tiendita/search.py` para observar cómo escala una búsqueda lineal frente a un diccionario al pasar de 1,000 a 100,000 productos.
-- **Debuguear**. Corrige dos bugs en código existente, primero en `backend/tiendita/pricing.py` (donde se usa `float` y se omite el tope `max_discount_cents`) y después en `backend/tiendita/catalog.py` (donde `search_by_name` falla ante tildes, mayúsculas y espacios repetidos).
+- **Debuguear**. Corre `make check STEP=2` y lee los síntomas. Un descuento de 10 % sobre 105 centavos devuelve 10 y el negocio espera 11. Un cupón con tope descuenta más que su tope. Y `search_by_name` no encuentra `"  pantalón   chino "` aunque el producto existe. Encuentra la causa de cada uno en `backend/tiendita/pricing.py` y `backend/tiendita/catalog.py` antes de cambiar código.
 - **Escribir**. Agrega al menos tres pruebas reales en `backend/tests/step2/test_student_pricing.py` para cubrir redondeo half-up, tope de cupón y `OutOfStockError`.
 
 ## Criterios de aceptación

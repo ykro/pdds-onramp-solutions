@@ -4,7 +4,7 @@ Una revisión de código busca defectos reales, riesgos de mantenimiento y desal
 
 ## Versión buena
 
-> **Comentario 1 (bloqueante, corrección)** — En `backend/tiendita/services/checkout.py`, línea 42, el descuento porcentual se calcula con `round(subtotal * 0.15)`. Eso convierte el monto a `float` y falla con centavos impares en `CA-2.1`. Sugiero usar aritmética entera `(subtotal * percent + 50) // 100` y agregar un test con `subtotal = 1055`.
+> **Comentario 1 (bloqueante, corrección)** — En `backend/tiendita/services/checkout.py`, línea 42, el descuento porcentual se calcula con `round(subtotal * 0.15)`. Eso convierte el monto a `float` y falla con centavos impares en `CA-2.1`. Sugiero resolverlo con aritmética entera, sin pasar por `float`, y agregar un test con `subtotal = 1055` que documente el redondeo esperado.
 >
 > **Comentario 2 (bloqueante, concurrencia)** — En `db/queries/checkout.sql`, línea 14, el `SELECT` lee los productos sin `ORDER BY id` antes de `FOR UPDATE`. Si dos carritos traen los mismos productos en orden invertido pueden caer en deadlock. Agregar `ORDER BY id` elimina ese escenario.
 >

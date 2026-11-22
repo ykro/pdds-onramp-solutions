@@ -45,3 +45,27 @@ Defecto de concurrencia donde el resultado final de un programa cambia según el
 ## Rollback
 
 Acción de revertir un deploy, una migración o una transacción de base de datos al último estado estable conocido cuando aparece un fallo grave. Diseñar cambios pequeños y compatibles hacia atrás hace que un rollback sea rápido y seguro.
+
+## API y endpoint
+
+Un API es la puerta por la que un programa le pide datos o acciones a otro ([MDN: API](https://developer.mozilla.org/es/docs/Glossary/API)). Cada endpoint es una combinación de método y ruta, como `GET /api/products`, que responde algo concreto.
+
+## Commit, rama y Pull Request
+
+Un commit guarda una foto del proyecto con un mensaje. Una rama es una línea de trabajo aparte de `main`. Un Pull Request propone llevar los commits de una rama a otra y es donde ocurre el code review ([Pro Git](https://git-scm.com/book/es/v2)).
+
+## Deploy
+
+Publicar tu aplicación en un servidor para que otras personas la usen desde internet. En el Paso 5 el deploy es opcional y se hace en Vercel.
+
+## ORM
+
+Una librería que convierte filas de la base de datos en objetos del lenguaje y genera el SQL por ti, como SQLAlchemy en Python. Tiendita usa SQL directo con `psycopg` para que veas cada consulta.
+
+## SQL
+
+El lenguaje para consultar y modificar bases de datos relacionales ([PostgreSQL: tutorial](https://www.postgresql.org/docs/current/tutorial-sql.html)). `SELECT` lee filas, `JOIN` combina tablas y `GROUP BY` agrupa para sumar o contar.
+
+## Test automatizado
+
+Código que ejecuta otra parte del código y comprueba el resultado. Pasa en verde cuando el comportamiento es el esperado y se pone en rojo cuando algo se rompe. En Tiendita los tests de Python corren con `pytest` y los de React con `vitest`.

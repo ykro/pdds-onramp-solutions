@@ -2,6 +2,8 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+Este paso toma unos 60 minutos.
+
 ## Antes de empezar
 
 1. ¿Por qué separar un backend en rutas HTTP, capa de servicio y repositorio simplifica probar reglas de negocio y seguridad? (Pista, revisa `diagrams/layers.svg` y `example/layered_endpoint_example.py`.)
@@ -14,9 +16,9 @@ En un sistema en producción, separar transporte HTTP, reglas de negocio y persi
 
 ## Qué vas a hacer
 
-- **Leer**. Recorre las tres capas ya operativas en `backend/tiendita/api/app.py`, `backend/tiendita/services/store_service.py` y `backend/tiendita/repositories/orders_repo.py`, además de la verificación JWT con JWKS ya lista en `backend/tiendita/api/auth.py`.
+- **Leer**. Levanta el API con `make dev-api` y abre `http://localhost:8000/docs`. Prueba `GET /api/products` con el botón **Try it out** y luego desde la terminal con `curl -i http://localhost:8000/api/products`. Fíjate en el código de estado y en las cabeceras. Después recorre las tres capas ya operativas en `backend/tiendita/api/app.py`, `backend/tiendita/services/store_service.py` y `backend/tiendita/repositories/orders_repo.py`, además de la verificación JWT con JWKS ya lista en `backend/tiendita/api/auth.py`.
 - **Debuguear**. Corrige la fuga de autorización en `StoreService.get_my_orders()` dentro de `backend/tiendita/services/store_service.py`, donde un usuario autenticado puede leer pedidos que pertenecen a otra cuenta.
-- **Escribir**. Agrega el endpoint `GET /api/products/{sku}` atravesando las tres capas (`app.py`, `store_service.py` y `orders_repo.py`) para responder `200` con el producto o `404` cuando el SKU no existe.
+- **Escribir**. Agrega el endpoint `GET /api/products/{sku}`. El repositorio ya tiene `get_product_by_sku` en `orders_repo.py`; te toca escribir el método del servicio en `store_service.py` y la ruta en `app.py`, que responde `200` con el producto o `404` cuando el SKU no existe. Pruébalo en `/docs` antes de correr los tests.
 
 ![Capas del backend](diagrams/layers.svg)
 

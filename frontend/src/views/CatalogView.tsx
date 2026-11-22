@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { createOrder, fetchProducts, Order, Product } from '../lib/api';
 import { formatQuetzales, UseCartResult } from '../hooks/useCart';
+import { FreeShippingNotice } from './FreeShippingNotice';
 
 export interface CatalogViewProps {
   cart: UseCartResult;
@@ -89,6 +90,7 @@ export function CatalogView({ cart, onOrderCreated }: CatalogViewProps) {
           <span className="cart-meta" data-testid="cart-total">
             {cart.formattedTotal}
           </span>
+          <FreeShippingNotice remainingCents={cart.freeShippingRemainingCents} />
           <button
             type="button"
             className="btn btn-accent"

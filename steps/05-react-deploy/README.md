@@ -2,6 +2,8 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+Este paso toma unos 60 (más unos 45 si haces el deploy opcional) minutos.
+
 ## Antes de empezar
 
 1. ¿Qué ventajas da tipar las respuestas del backend en TypeScript antes de renderizarlas en una vista de React? (Pista, revisa `example/python_vs_typescript.md` y `frontend/src/lib/api.ts`.)
@@ -15,8 +17,9 @@ El valor técnico se comprueba cuando el frontend tipado conversa con el API rea
 ## Qué vas a hacer
 
 - **Leer**. Revisa [example/python_vs_typescript.md](example/python_vs_typescript.md) si vienes de Python, y luego inspecciona `frontend/src/lib/api.ts`, `frontend/src/lib/auth.ts` y `frontend/src/views/CatalogView.tsx` para seguir cómo el navegador autentica sesiones y llama al backend.
-- **Debuguear**. Corrige el bug en `totalCents` dentro de `frontend/src/hooks/useCart.ts`, donde el cálculo suma el precio unitario de cada producto sin multiplicarlo por `quantity`.
-- **Escribir**. Conecta tu copia a Neon y [Neon Auth](https://neon.com/docs/guides/neon-auth), haz deploy del proyecto completo en [Vercel](https://vercel.com/docs/functions/runtimes/python) y registra tu URL pública en `app_url` dentro de `deploy.json`.
+- **Debuguear**. Levanta el frontend con `make dev-web`, agrega tres unidades del mismo producto al carrito y compara el total con la cuenta a mano. Encuentra en `frontend/src/hooks/useCart.ts` por qué no coinciden.
+- **Escribir**. Tiendita regala el envío desde `FREE_SHIPPING_CENTS` (Q 300.00). Completa `freeShippingRemainingCents` en `useCart.ts` y escribe el componente `frontend/src/views/FreeShippingNotice.tsx`, que avisa cuánto falta o que el envío ya es gratis. Después muéstralo en la barra del carrito de `CatalogView.tsx`, junto al total.
+- **Reto opcional: deploy**. Conecta tu copia a Neon y [Neon Auth](https://neon.com/docs/guides/neon-auth), haz deploy del proyecto completo en [Vercel](https://vercel.com/docs/functions/runtimes/python) y registra tu URL pública en `app_url` dentro de `deploy.json`. El badge del paso no depende de esto; hazlo cuando tengas tiempo para crear las tres cuentas.
 
 ![Arquitectura de deploy](diagrams/deployment.svg)
 
@@ -34,7 +37,8 @@ Así se ven las tres vistas cuando la aplicación está lista.
 
 - `CA-5.1` `frontend/` pasa `npm run typecheck` y `npm run build` sin errores.
 - `CA-5.2` `useCart` y las tres vistas principales pasan la suite de pruebas en `vitest`.
-- `CA-5.3` `deploy.json` apunta a tu URL de Vercel y `make check-prod` confirma `/api/health`, `/api/products`, `/api/orders/mine` y `/`.
+- `CA-5.3` `freeShippingRemainingCents` nunca es negativo y `FreeShippingNotice` anuncia con `role="status"` cuánto falta o que el envío es gratis.
+- Opcional: `deploy.json` apunta a tu URL de Vercel y `make check-prod` confirma `/api/health`, `/api/products`, `/api/orders/mine` y `/`.
 
 ## Al terminar
 

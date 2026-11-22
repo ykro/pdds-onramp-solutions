@@ -41,7 +41,7 @@
         <text x="40" y="116" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">id</text>
         <rect x="144" y="106" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
         <text x="154" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PK</text>
-        <text x="268" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">bigint</text>
+        <text x="268" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <rect x="29" y="124" width="250" height="24" fill="#0f2547" fill-opacity="0.02"/>
         <text x="40" y="140" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">sku</text>
         <rect x="144" y="130" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
@@ -68,7 +68,7 @@
         <text x="154" y="235" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">NN</text>
         <text x="268" y="236" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <line x1="28" y1="244" x2="280" y2="244" stroke="#0f2547" stroke-opacity="0.12" stroke-width="1"/>
-        <text x="40" y="260" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS E ÍNDICES</text>
+        <text x="40" y="260" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS</text>
         <text x="40" y="278" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">UNIQUE (sku)</text>
         <text x="40" y="296" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (stock >= 0)</text>
         <text x="40" y="314" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (price_cents >= 0)</text>
@@ -82,20 +82,20 @@
         <text x="368" y="116" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">id</text>
         <rect x="472" y="106" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
         <text x="482" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PK</text>
-        <text x="592" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">bigint</text>
+        <text x="592" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <rect x="357" y="124" width="246" height="24" fill="#0f2547" fill-opacity="0.02"/>
         <text x="368" y="140" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">order_id</text>
         <rect x="472" y="130" width="20" height="12" rx="2" fill="none" stroke="#C59216" stroke-width="0.8"/>
         <text x="482" y="139" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">FK</text>
         <rect x="496" y="130" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
         <text x="506" y="139" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">NN</text>
-        <text x="592" y="140" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">bigint</text>
+        <text x="592" y="140" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <text x="368" y="164" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">product_id</text>
         <rect x="472" y="154" width="20" height="12" rx="2" fill="none" stroke="#C59216" stroke-width="0.8"/>
         <text x="482" y="163" fill="#C59216" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">FK</text>
         <rect x="496" y="154" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
         <text x="506" y="163" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">NN</text>
-        <text x="592" y="164" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">bigint</text>
+        <text x="592" y="164" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <rect x="357" y="172" width="246" height="24" fill="#0f2547" fill-opacity="0.02"/>
         <text x="368" y="188" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">quantity</text>
         <rect x="480" y="178" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
@@ -106,9 +106,9 @@
         <text x="490" y="211" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">NN</text>
         <text x="592" y="212" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <line x1="356" y1="220" x2="604" y2="220" stroke="#0f2547" stroke-opacity="0.12" stroke-width="1"/>
-        <text x="368" y="236" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS E ÍNDICES</text>
+        <text x="368" y="236" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS</text>
         <text x="368" y="254" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (quantity > 0)</text>
-        <text x="368" y="272" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">idx_order_items_product_id</text>
+        <text x="368" y="272" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (unit_price_cents &gt;= 0)</text>
         <rect x="680" y="64" width="252" height="224" rx="6" fill="#F7F6F2"/>
         <rect x="680" y="64" width="252" height="224" rx="6" fill="#FFFFFF" stroke="#B8C4D6" stroke-width="1.2"/>
         <path d="M 680,70 Q 680,64 686,64 H 926 Q 932,64 932,70 V 100 H 680 Z" fill="#EFECE6"/>
@@ -119,7 +119,7 @@
         <text x="692" y="116" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">id</text>
         <rect x="796" y="106" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
         <text x="806" y="115" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">PK</text>
-        <text x="920" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">bigint</text>
+        <text x="920" y="116" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">integer</text>
         <rect x="681" y="124" width="250" height="24" fill="#0f2547" fill-opacity="0.02"/>
         <text x="692" y="140" fill="#0F2547" font-size="11" font-family="'Geist', sans-serif">user_id</text>
         <rect x="796" y="130" width="20" height="12" rx="2" fill="none" stroke="#0f2547" stroke-opacity="0.28" stroke-width="0.8"/>
@@ -139,8 +139,8 @@
         <text x="806" y="211" fill="#3B5B8C" font-size="7" font-family="'Geist Mono', monospace" text-anchor="middle">NN</text>
         <text x="920" y="212" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace" text-anchor="end">timestamptz</text>
         <line x1="680" y1="220" x2="932" y2="220" stroke="#0f2547" stroke-opacity="0.12" stroke-width="1"/>
-        <text x="692" y="236" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS E ÍNDICES</text>
-        <text x="692" y="254" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">idx_orders_user_id</text>
+        <text x="692" y="236" fill="#5C769E" font-size="7" font-family="'Geist Mono', monospace" letter-spacing="0.12em">CONSTRAINTS</text>
+        <text x="692" y="254" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (status IN (...))</text>
         <text x="692" y="272" fill="#3B5B8C" font-size="9" font-family="'Geist Mono', monospace">CHECK (total_cents >= 0)</text>
         <line x1="32" y1="384" x2="928" y2="384" stroke="#0f2547" stroke-opacity="0.12" stroke-width="0.8"/>
         <text x="32" y="400" fill="#3B5B8C" font-size="8" font-family="'Geist Mono', monospace" letter-spacing="0.14em">LEYENDA</text>

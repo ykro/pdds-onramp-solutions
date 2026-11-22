@@ -2,6 +2,8 @@
 
 ![Dónde estás](diagrams/where.svg)
 
+Este paso toma unos 60 minutos.
+
 ## Antes de empezar
 
 1. ¿Para qué sirve el código de salida (`exit code`) de un script en la terminal cuando forma parte de un pipeline de automatización? (Pista, revisa `scripts/log_report.sh` y `example/intro-terminal.md`.)
@@ -12,17 +14,25 @@
 
 Quien lidera equipos técnicos necesita leer scripts de operación en minutos, detectar dónde fallan y revisar cambios con criterio en un Pull Request. Dominar la línea de comandos como propone [MIT The Missing Semester](https://missing.csail.mit.edu/) y manejar ramas limpias según [Pro Git](https://git-scm.com/book/en/v2) te da control sobre cualquier repositorio. Además, los hábitos de automatización y pruebas repetibles de *The Pragmatic Programmer* (Thomas y Hunt) convierten tareas manuales frágiles en herramientas confiables.
 
+## Lo mínimo de git que necesitas
+
+- **Commit.** Una foto del proyecto con un mensaje que explica el cambio. `git add archivo` elige qué entra en la foto y `git commit -m "mensaje"` la toma.
+- **Rama.** Una línea de trabajo aparte. `git switch -c fix/step-1-log-report` crea una rama y te mueve a ella; tus commits no tocan `main` hasta que alguien los acepte.
+- **Push.** `git push -u origin fix/step-1-log-report` sube tu rama a GitHub. La primera vez, `-u` conecta tu rama local con la remota.
+- **Pull Request.** En GitHub, el botón **Compare & pull request** que aparece después del push abre la propuesta de llevar tu rama a `main`. Ahí otra persona revisa el diff y comenta.
+- **Ver qué pasa.** `git status` muestra qué cambió y qué está listo para el commit, y `git log --oneline` muestra la historia.
+
 ## Qué vas a hacer
 
 - **Leer**. Inspecciona `scripts/log_report.sh` y las primeras líneas de `data/access.log` para entender el formato de columnas y cómo se encadenan `wc`, `awk`, `sort` y `uniq`. Si quieres repasar comandos básicos del shell, abre [example/intro-terminal.md](example/intro-terminal.md).
-- **Debuguear**. Crea una rama nueva y corrige dos fallas en `scripts/log_report.sh`, porque el script sigue sin salir con código `1` cuando falta el archivo de entrada y cuenta códigos `4xx` en lugar de errores `5xx`.
+- **Debuguear**. Crea una rama nueva y corre `./scripts/log_report.sh data/access.log`, luego `./scripts/log_report.sh` sin argumento y con un archivo que no existe. Compara `errors_5xx` con lo que cuentas a mano en el log, y lee el error que sale cuando falta el archivo: ¿le serviría a quien lo encuentra a las 3 a. m. en un job de CI? Corrige las dos fallas.
 - **Escribir**. Completa la historia de usuario en `docs/stories/001-order-history.md` usando el formato Como / Quiero / Para y al menos dos criterios Dado / Cuando / Entonces. Luego abre tu Pull Request y contrasta tu trabajo contra la guía de [examples/code-review.md](../../examples/code-review.md).
 
 ![Flujo Git](diagrams/git-flow.svg)
 
 ## Criterios de aceptación
 
-- `CA-1.1` `scripts/log_report.sh` tiene permiso de ejecución (`+x`), sale con código `1` si falta el archivo y sale con código `0` cuando el archivo existe.
+- `CA-1.1` `scripts/log_report.sh` tiene permiso de ejecución (`+x`). Si no recibe argumento o el archivo no existe, imprime en stderr `Error: log file not found: <archivo>` y sale con código `1`. Si el archivo existe, sale con código `0`.
 - `CA-1.2` `scripts/log_report.sh data/access.log` imprime `total_requests`, `errors_5xx` y `top_endpoints` con los conteos exactos del log.
 - `CA-1.3` `docs/stories/001-order-history.md` cumple la estructura Como / Quiero / Para e incluye al menos dos criterios con Dado / Cuando / Entonces.
 

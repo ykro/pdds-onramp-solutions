@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+from urllib.parse import urlparse
 from typing import Any
 
 import psycopg
@@ -20,6 +21,12 @@ def seeded_db() -> Any:
         pytest.fail(
             "Paso 3: falta DATABASE_URL. Corre `make db-up` y luego `make check STEP=3` "
             "(el Makefile ya apunta al PostgreSQL local)."
+        )
+    host = (urlparse(DB_URL).hostname or "").lower()
+    if host not in {"localhost", "127.0.0.1", "::1", "db", "postgres"} and not os.environ.get("CI"):
+        pytest.fail(
+            f"Paso 3: DATABASE_URL apunta a {host}. Este test borra y recrea las tablas, así que solo "
+            "corre contra el PostgreSQL local de `make db-up`. Quita la variable o usa la URL local."
         )
     try:
         admin = psycopg.connect(DB_URL, row_factory=dict_row, autocommit=True, connect_timeout=3)

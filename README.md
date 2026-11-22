@@ -6,7 +6,7 @@
 [![Paso 4](https://github.com/ykro/pdds-onramp-solutions/actions/workflows/step-4.yml/badge.svg)](https://github.com/ykro/pdds-onramp-solutions/actions/workflows/step-4.yml)
 [![Paso 5](https://github.com/ykro/pdds-onramp-solutions/actions/workflows/step-5.yml/badge.svg)](https://github.com/ykro/pdds-onramp-solutions/actions/workflows/step-5.yml)
 
-Este repositorio contiene las soluciones completas, limpias y verificadas de [ykro/pdds-onramp](https://github.com/ykro/pdds-onramp), el onramp práctico del Postgrado en Diseño y Desarrollo de Software (PDDS) de Universidad Galileo. Cada uno de los cinco pasos se puede revisar de forma independiente y combina lectura de código ajeno, debugging y un cambio pequeño.
+Este repositorio contiene las soluciones completas, limpias y verificadas de [ykro/pdds-onramp](https://github.com/ykro/pdds-onramp), el onramp práctico del Posgrado en Diseño y Desarrollo de Software (PDDS) de Universidad Galileo. Cada uno de los cinco pasos se puede revisar de forma independiente y combina lectura de código ajeno, debugging y un cambio pequeño.
 
 ![Mapa de Tiendita](docs/diagrams/tiendita-overview.svg)
 
