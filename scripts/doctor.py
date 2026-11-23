@@ -7,7 +7,10 @@ import shutil
 import socket
 import subprocess
 import sys
+from pathlib import Path
 from urllib.parse import urlparse
+
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def _check_cmd(name: str, fix: str) -> bool:
@@ -52,13 +55,24 @@ def _check_docker() -> None:
         )
 
 
+def _check_path(rel_path: str, fix: str) -> None:
+    target = ROOT / rel_path
+    if target.exists():
+        print(f"[OK]    {rel_path} presente")
+    else:
+        print(f"[AVISO] Falta {rel_path}. Corre: {fix}")
+
+
 def main() -> int:
     print("Diagnóstico del entorno de pdds-onramp\n")
     ok = True
     ok &= _check_cmd("python3", "Instala Python 3.12 o abre el repo en GitHub Codespaces.")
     ok &= _check_cmd("uv", "Corre: curl -LsSf https://astral.sh/uv/install.sh | sh")
     ok &= _check_cmd("node", "Instala Node 22 o abre el repo en GitHub Codespaces.")
+    ok &= _check_cmd("npm", "Instala Node 22 (incluye npm) o abre el repo en GitHub Codespaces.")
     ok &= _check_cmd("git", "Instala Git desde https://git-scm.com/")
+    _check_path(".venv", "uv sync")
+    _check_path("frontend/node_modules", "cd frontend && npm ci")
     _check_docker()
 
     db_url = os.environ.get("DATABASE_URL", "")
@@ -66,7 +80,10 @@ def main() -> int:
         print("[OK]    DATABASE_URL definida")
         _check_postgres(db_url)
     else:
-        print("[AVISO] DATABASE_URL no está definida (necesaria en Pasos 3 y 5). Copia .env.example a .env y corre make db-up.")
+        print(
+            "[AVISO] DATABASE_URL no está definida en tu shell (Makefile usa la base local "
+            "por defecto). Para Pasos 3 y 5 corre: make db-up && make migrate"
+        )
 
     try:
         res = subprocess.run(

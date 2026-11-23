@@ -66,6 +66,11 @@ def test_ca_3_2_top_products_query(seeded_db: psycopg.Connection[Any]) -> None:
     with seeded_db.cursor() as cur:
         cur.execute(sql)
         rows = cur.fetchall()
+    for r in rows:
+        assert r.get("name") and str(r["name"]).strip(), (
+            "CA-3.2: db/queries/top_products.sql debe devolver la columna 'name' no vacía "
+            f"en cada fila (fila recibida: {r})."
+        )
     got = [(r["sku"], int(r["units_sold"])) for r in rows]
     expected = _expected_top5()
     assert got == expected, (

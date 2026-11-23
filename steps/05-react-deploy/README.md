@@ -60,6 +60,14 @@ Ejecuta `make check STEP=5` para validar el frontend y las pruebas en local, y c
 
 ## Respuestas de autoevaluación
 
-1. El total mostraría el monto viejo y el carrito quedaría inconsistente. Al derivarlo de `items` con `useMemo`, el total siempre corresponde a lo que hay en el carrito.
+### Antes de empezar
+
+1. El compilador detecta al editar si escribiste mal el nombre de un campo (`price_cents` frente a `price`) o si olvidaste manejar un valor nulo antes de que falle en el navegador.
+2. Si guardas dos estados para la misma verdad, cualquier cambio que actualice `items` y olvide actualizar `totalCents` deja la pantalla con montos inconsistentes.
+3. Busca el elemento accesible con `role="status"` y el texto visible que lee la persona; así la prueba sigue pasando aunque cambies la estructura interna del componente.
+
+### Al terminar
+
+1. El total mostraría el monto viejo y el carrito quedaría inconsistente. Al calcularlo a partir de `items` en cada render, el total siempre corresponde a lo que hay en el carrito.
 2. El test le pasa cualquier monto sin armar un carrito. El componente solo muestra; el cálculo vive en `useCart` y se prueba aparte.
 3. Respuesta personal. Debe mencionar el total derivado de cantidad por precio y de dónde sale el monto que falta para el envío gratis.

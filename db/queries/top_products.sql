@@ -1,5 +1,6 @@
 -- Top 5 products by total units sold (excluding cancelled orders)
 -- Columns: sku, name, units_sold
+-- Order: ORDER BY units_sold DESC, p.sku ASC (desempate por SKU ascendente)
 
 SELECT
     p.sku,

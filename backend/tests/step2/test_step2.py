@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-import inspect
+import ast
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -10,6 +12,39 @@ from tiendita import catalog, pricing
 
 ROOT = Path(__file__).resolve().parents[3]
 PRODUCTS_CSV = ROOT / "data" / "products.csv"
+STUDENT_TESTS = ROOT / "backend" / "tests" / "step2" / "test_student_pricing.py"
+
+_MUTATION_HARNESS = """
+import sys
+import pytest
+from tiendita import pricing
+
+test_file, mutant = sys.argv[1], sys.argv[2]
+original_total = pricing.calculate_order_total
+
+if mutant == "truncate_rounding":
+    def truncate_rounding(amount_cents: int, percent: int) -> int:
+        return (amount_cents * percent) // 100
+    pricing.round_half_up_percent = truncate_rounding
+elif mutant == "no_coupon_cap":
+    def total_without_cap(items, coupon=None):
+        if coupon is not None:
+            coupon = pricing.Coupon(coupon.code, coupon.percent_off, None)
+        return original_total(items, coupon=coupon)
+    pricing.calculate_order_total = total_without_cap
+elif mutant == "no_stock_check":
+    def total_without_stock_check(items, coupon=None):
+        relaxed = [
+            pricing.CartItem(
+                i.sku, i.unit_price_cents, i.quantity, max(i.quantity, i.available_stock)
+            )
+            for i in items
+        ]
+        return original_total(relaxed, coupon=coupon)
+    pricing.calculate_order_total = total_without_stock_check
+
+sys.exit(pytest.main(["-q", "--no-header", test_file]))
+"""
 
 
 def test_ca_2_1_pricing_exact_cents_and_coupon_cap() -> None:
@@ -43,89 +78,88 @@ def test_ca_2_2_catalog_search_handles_accents_case_and_spaces() -> None:
     assert len(loaded.invalid_rows) == 5
 
     matches = catalog.search_by_name(loaded.products, "  pantalón   chino ")
-    assert len(matches) >= 1, (
-        "CA-2.2: search_by_name falló al buscar '  pantalón   chino '. "
+    found_skus = {p.sku for p in matches}
+    assert found_skus == {"SKU-003", "SKU-023"}, (
+        "CA-2.2: search_by_name('  pantalón   chino ') debe devolver exactamente "
+        f"{{'SKU-003', 'SKU-023'}} (obtenido={sorted(found_skus)}). "
         "Revisa backend/tiendita/catalog.py y usa _normalize_text."
+    )
+    empty = catalog.search_by_name(loaded.products, "producto-inexistente-xyz")
+    assert empty == [], (
+        "CA-2.2: search_by_name debe devolver [] cuando ningún producto coincide "
+        f"(obtenido={len(empty)} resultados)."
     )
 
 
-def _student_test_functions() -> list:
-    student_file = ROOT / "backend" / "tests" / "step2" / "test_student_pricing.py"
-    raw = student_file.read_text(encoding="utf-8")
+def _has_assertion(node: ast.AST) -> bool:
+    for sub in ast.walk(node):
+        if isinstance(sub, ast.Assert):
+            return True
+        if isinstance(sub, ast.Call):
+            if isinstance(sub.func, ast.Attribute) and sub.func.attr == "raises":
+                return True
+            if isinstance(sub.func, ast.Name) and sub.func.id == "raises":
+                return True
+    return False
+
+
+def _validate_student_test_file() -> list[str]:
+    raw = STUDENT_TESTS.read_text(encoding="utf-8")
     assert "TODO" not in raw, (
         "CA-2.3: Completa tus 3 tests en backend/tests/step2/test_student_pricing.py "
         "y quita los TODO."
     )
-    from backend.tests.step2 import test_student_pricing as student_mod
-
-    return [
-        fn
-        for name, fn in inspect.getmembers(student_mod, inspect.isfunction)
-        if name.startswith("test_")
+    tree = ast.parse(raw, filename=str(STUDENT_TESTS))
+    test_nodes = [
+        node
+        for node in tree.body
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+        and node.name.startswith("test_")
     ]
+    assert len(test_nodes) >= 3, (
+        "CA-2.3: Escribe al menos 3 funciones test_* en test_student_pricing.py "
+        f"(actuales={len(test_nodes)})."
+    )
+    without_assert = [node.name for node in test_nodes if not _has_assertion(node)]
+    assert not without_assert, (
+        "CA-2.3: Cada función test_* en test_student_pricing.py debe contener un assert "
+        f"o pytest.raises (sin verificación: {without_assert})."
+    )
+    return [node.name for node in test_nodes]
 
 
-def _failures(test_fns: list) -> list[str]:
-    failed = []
-    for fn in test_fns:
-        try:
-            fn()
-        except KeyboardInterrupt:
-            raise
-        except BaseException:  # noqa: BLE001 - pytest.fail y pytest.raises lanzan BaseException
-            failed.append(fn.__name__)
-    return failed
+def _run_student_suite(mutant: str = "") -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        [sys.executable, "-c", _MUTATION_HARNESS, str(STUDENT_TESTS), mutant],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
 
 
 def test_ca_2_3_student_pricing_tests_exist_and_pass() -> None:
-    test_fns = _student_test_functions()
-    assert len(test_fns) >= 3, (
-        "CA-2.3: Escribe al menos 3 funciones test_* en test_student_pricing.py "
-        f"(actuales={len(test_fns)})."
+    _validate_student_test_file()
+    res = _run_student_suite()
+    assert res.returncode == 0, (
+        "CA-2.3: Tus pruebas en test_student_pricing.py fallan con tu pricing.py actual:\n"
+        f"{(res.stdout + res.stderr).strip()}"
     )
-    failed = _failures(test_fns)
-    assert not failed, f"CA-2.3: Estas pruebas tuyas fallan con tu pricing.py actual: {failed}."
 
 
-def test_ca_2_3_student_tests_fail_on_buggy_versions(monkeypatch: pytest.MonkeyPatch) -> None:
+def test_ca_2_3_student_tests_fail_on_buggy_versions() -> None:
     """Cada prueba útil debe ponerse en rojo cuando reaparece uno de los tres bugs del paso."""
-    test_fns = _student_test_functions()
-    original_total = pricing.calculate_order_total
-
-    def banker_rounding(amount_cents: int, percent: int) -> int:
-        return int(round(amount_cents * (percent / 100.0)))
-
-    def total_without_cap(items, coupon=None):  # type: ignore[no-untyped-def]
-        if coupon is not None:
-            coupon = pricing.Coupon(coupon.code, coupon.percent_off, None)
-        return original_total(items, coupon=coupon)
-
-    def total_without_stock_check(items, coupon=None):  # type: ignore[no-untyped-def]
-        relaxed = [
-            pricing.CartItem(
-                i.sku, i.unit_price_cents, i.quantity, max(i.quantity, i.available_stock)
-            )
-            for i in items
-        ]
-        return original_total(relaxed, coupon=coupon)
-
-    buggy_versions = {
-        "redondeo bancario con float en round_half_up_percent": (
-            "round_half_up_percent",
-            banker_rounding,
-        ),
-        "cupón sin tope max_discount_cents": ("calculate_order_total", total_without_cap),
-        "venta sin revisar inventario (sin OutOfStockError)": (
-            "calculate_order_total",
-            total_without_stock_check,
-        ),
+    _validate_student_test_file()
+    mutants = {
+        "truncamiento en lugar de half-up en round_half_up_percent": "truncate_rounding",
+        "cupón sin tope max_discount_cents": "no_coupon_cap",
+        "venta sin revisar inventario (sin OutOfStockError)": "no_stock_check",
     }
     missed = []
-    for label, (attr, fake) in buggy_versions.items():
-        with monkeypatch.context() as m:
-            m.setattr(pricing, attr, fake)
-            if not _failures(test_fns):
-                missed.append(label)
+    for label, mutant in mutants.items():
+        res = _run_student_suite(mutant)
+        if res.returncode == 0:
+            missed.append(label)
     assert not missed, (
         "CA-2.3: Tus pruebas siguen en verde cuando reaparece este bug: "
         + "; ".join(missed)

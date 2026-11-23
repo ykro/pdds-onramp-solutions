@@ -45,6 +45,14 @@ Ejecuta `make check STEP=2` para validar los tres criterios y corre `make bench`
 
 ## Respuestas de autoevaluación
 
+### Antes de empezar
+
+1. Fracciones decimales como `0.1` no tienen representación binaria exacta en `float`, por lo que al sumar o aplicar porcentajes acumulan diferencias de centavos sin lanzar errores.
+2. La búsqueda lineal (`O(n)`) multiplica su tiempo unas cien veces al pasar de 1,000 a 100,000 productos; el diccionario (`O(1)` promedio) tarda casi lo mismo.
+3. Las pruebas sobre funciones puras corren en milisegundos sin levantar servidores ni bases de datos, y aíslan de inmediato si el fallo vive en la regla de negocio.
+
+### Al terminar
+
 1. Tu versión devuelve 3 centavos (`(5 * 50 + 50) // 100`). La versión con `round()` devolvía 2, porque `round(2.5)` redondea al par más cercano.
 2. Un ejemplo: «**Bloqueante, corrección.** En `backend/tiendita/pricing.py`, el descuento del cupón no se limita a `max_discount_cents`, así que un cupón de 50 % con tope de Q 10 descuenta Q 25 en un producto de Q 50. El negocio pierde dinero en cada venta grande. Propongo `min(descuento, tope)` y un test con ese caso. El redondeo en centavos enteros quedó bien resuelto». Cumple la rúbrica si dice dónde, qué tan grave es, qué impacto tiene, qué hacer y con qué tono.
 3. Respuesta personal. Debe mencionar los centavos enteros, el redondeo half-up, el tope del cupón y la normalización de texto en la búsqueda.

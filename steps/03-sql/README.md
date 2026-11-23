@@ -26,7 +26,7 @@ Si nunca escribiste SQL, abre primero [example/guided_joins_and_groupby.sql](exa
 
 ## Qué vas a hacer
 
-- **Leer**. Levanta PostgreSQL local con `make db-up` (en local necesitas Docker Desktop abierto; `make doctor` te dice si responde) y revisa el esquema ya listo en `db/migrations/001_init.sql`, el diagrama `diagrams/db-schema.svg` y los ejemplos de joins y agrupaciones en [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql).
+- **Leer**. Levanta PostgreSQL local y carga los datos iniciales con `make db-up && make migrate` (en local necesitas Docker Desktop abierto; `make doctor` te dice si responde) y revisa el esquema ya listo en `db/migrations/001_init.sql`, el diagrama `diagrams/db-schema.svg` y los ejemplos de joins y agrupaciones en [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql).
 - **Debuguear**. Abre `psql` con la primera línea (si no conecta, revisa usuario y base en `.env.example`). En otra terminal, abre Python con la segunda y escribe las otras tres:
 
   ```bash
@@ -45,7 +45,7 @@ Si nunca escribiste SQL, abre primero [example/guided_joins_and_groupby.sql](exa
 ## Criterios de aceptación
 
 - `CA-3.1` `db/queries/monthly_sales.sql` agrupa las ventas activas por mes (`YYYY-MM`) devolviendo conteo de órdenes e ingresos en centavos.
-- `CA-3.2` `db/queries/top_products.sql` devuelve los cinco productos más vendidos ordenados por unidades totales.
+- `CA-3.2` `db/queries/top_products.sql` devuelve los cinco productos más vendidos ordenados por unidades totales y desempatados por SKU (`ORDER BY units_sold DESC, p.sku ASC`).
 - `CA-3.3` `find_orders_by_sku()` pasa el SKU como parámetro y nunca dentro del texto SQL, bloquea el payload `' OR '1'='1` y excluye pedidos cancelados.
 
 ## Al terminar
@@ -56,9 +56,17 @@ Si nunca escribiste SQL, abre primero [example/guided_joins_and_groupby.sql](exa
 
 ## Cómo verificar
 
-Levanta la base de datos local con `make db-up` y ejecuta `make check STEP=3`. Antes de escribir tus consultas, revisa [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql) o consulta la [primera pista](hints/1.md).
+Levanta la base de datos local y aplica las migraciones con `make db-up && make migrate`, luego ejecuta `make check STEP=3`. Antes de escribir tus consultas, revisa [example/guided_joins_and_groupby.sql](example/guided_joins_and_groupby.sql) o consulta la [primera pista](hints/1.md).
 
 ## Respuestas de autoevaluación
+
+### Antes de empezar
+
+1. En dos hojas sueltas nada lo impide; cualquiera puede borrar el producto y dejar pedidos huérfanos. En una base relacional, una llave foránea (`REFERENCES products(id)`) rechaza ese cambio.
+2. La base de datos interpreta ese texto como instrucciones SQL y no como dato, lo que permite saltar filtros (como `' OR '1'='1`) o leer información ajena.
+3. Filtrar en SQL evita transferir filas innecesarias y garantiza que cualquier consulta o reporte aplique la misma regla sin depender del código que la consuma.
+
+### Al terminar
 
 1. Bajan `order_count` y `revenue_cents` de marzo. Con el filtro en el SQL, cualquier persona o reporte que corra la consulta obtiene la misma cifra, sin depender de que alguien recuerde filtrar después en Python.
 2. Que limpiar a mano siempre deja casos fuera (otras comillas, codificaciones, comentarios SQL). Con `%s`, psycopg manda el valor separado del texto de la consulta y PostgreSQL nunca lo interpreta como SQL.

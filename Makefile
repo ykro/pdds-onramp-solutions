@@ -11,6 +11,7 @@ check:
 	if [ "$(STEP)" = "1" ]; then \
 		uv run pytest backend/tests/step1 -v; \
 	elif [ "$(STEP)" = "2" ]; then \
+		uv run ruff check backend/tiendita/pricing.py backend/tiendita/catalog.py backend/tiendita/search.py backend/tests/step2; \
 		uv run pytest backend/tests/step2 -v; \
 	elif [ "$(STEP)" = "3" ]; then \
 		uv run pytest backend/tests/step3 -v; \

@@ -23,7 +23,7 @@ jobs:
           repo = os.environ["GITHUB_REPOSITORY"]
           readme = Path("README.md")
           text = readme.read_text(encoding="utf-8")
-          updated = text.replace("ykro/pdds-onramp", repo)
+          updated = text.replace("ykro/pdds-onramp/", f"{repo}/")
           if updated != text:
               readme.write_text(updated, encoding="utf-8")
           PY

@@ -6,29 +6,28 @@ Una historia clara acuerda qué problema resuelve el cambio antes de escribir c�
 
 ### Historia
 
-> **Título** — Consultar historial de órdenes propias en Tiendita
+> **Título** — Consultar pedidos propios en Tiendita
 >
-> **Problema** — Quien compra en Tiendita necesita revisar sus pedidos anteriores con fecha, estado y total en quetzales sin escribirle a soporte.
+> **Historia de usuario** — Como cliente autenticado de Tiendita, quiero consultar mis pedidos en `GET /api/orders/mine` para revisar su estado y el total pagado en quetzales sin escribirle a soporte.
 >
 > **Criterios de aceptación**
-> 1. Un usuario autenticado recibe únicamente sus propias órdenes ordenadas de la más reciente a la más antigua.
-> 2. Cada orden muestra fecha, estado, listado de ítems con cantidad y precio unitario en centavos, y total final.
-> 3. Una solicitud sin JWT válido responde `401` y un intento de leer una orden ajena responde `403`.
-> 4. Cuando el usuario todavía no tiene compras, la respuesta devuelve una lista vacía `[]` con estado `200`.
+> 1. Dado un cliente autenticado con pedidos propios y pedidos de otras cuentas en la base, cuando solicita `GET /api/orders/mine`, entonces el sistema responde `200 OK` únicamente con sus pedidos ordenados del más reciente al más antiguo.
+> 2. Dado un cliente autenticado que todavía no ha comprado, cuando solicita `GET /api/orders/mine`, entonces el sistema responde `200 OK` con una lista vacía `[]`.
+> 3. Dado un visitante sin token JWT o con un token vencido, cuando solicita `GET /api/orders/mine`, entonces el sistema responde `401 Unauthorized`.
 >
 > **Fuera de alcance** — Descarga de factura en PDF y cancelación de pedidos confirmados.
 
 ### Descripción del Pull Request
 
-> **Qué cambia** — Agrega el endpoint `GET /orders` en `backend/tiendita/api/orders.py`, la consulta filtrada por `user_id` en el repositorio y pruebas de aislamiento y autorización.
+> **Qué cambia** — Refuerza el filtro por `user_id` en `StoreService.get_my_orders` para `GET /api/orders/mine` en `backend/tiendita/api/app.py` y agrega pruebas de aislamiento por cuenta.
 >
-> **Por qué** — Implementa la historia `docs/stories/001-order-history.md`.
+> **Por qué** — Implementa la historia `docs/stories/001-order-history.md` y cierra la fuga de pedidos entre usuarios.
 >
 > **Cómo probarlo**
 > 1. Ejecuta `make check STEP=4`.
-> 2. Verifica que `test_user_cannot_read_foreign_order` pasa con `403`.
+> 2. Verifica que `test_ca_4_1_authorization_isolates_user_orders` pasa en verde.
 >
-> **Riesgos y rollback** — Cambio aditivo sin migraciones destructivas. Revertir el commit de merge retira la ruta sin afectar órdenes existentes.
+> **Riesgos y rollback** — Cambio acotado a la capa de servicio sin migraciones de base de datos. Revertir el commit de merge restaura el comportamiento anterior sin tocar pedidos existentes.
 
 ## Versión mala
 

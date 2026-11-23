@@ -12,7 +12,7 @@ from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class Product:
-    id: str
+    id: int
     name: str
     price_cents: int
     stock: int
@@ -21,7 +21,7 @@ class Product:
 ```typescript
 // TypeScript
 export interface Product {
-  readonly id: string;
+  readonly id: number;
   readonly name: string;
   readonly price_cents: number;
   readonly stock: number;
@@ -35,13 +35,13 @@ Un detalle clave en JavaScript y TypeScript es que solo existe el tipo numérico
 ```python
 # Python
 def format_quetzales(price_cents: int, prefix: str = "Q") -> str:
-    return f"{prefix}{price_cents / 100:.2f}"
+    return f"{prefix} {price_cents / 100:.2f}"
 ```
 
 ```typescript
 // TypeScript
 export function formatQuetzales(priceCents: number, prefix = "Q"): string {
-  return `${prefix}${(priceCents / 100).toFixed(2)}`;
+  return `${prefix} ${(priceCents / 100).toFixed(2)}`;
 }
 ```
 

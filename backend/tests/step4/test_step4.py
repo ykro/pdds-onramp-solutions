@@ -163,9 +163,22 @@ ADR_SECTIONS = ("contexto", "decisi[oó]n", "alternativas descartadas", "consecu
 def test_ca_4_4_adr_has_four_sections() -> None:
     adrs = sorted(ADR_DIR.glob("0001-*.md"))
     assert adrs, "CA-4.4: Falta tu ADR en docs/adr/0001-<tema>.md (modelo en examples/adr.md)."
-    text = adrs[0].read_text(encoding="utf-8").lower()
+    raw = adrs[0].read_text(encoding="utf-8")
+    assert "TODO" not in raw, (
+        f"CA-4.4: Completa {adrs[0].name} y elimina todos los marcadores TODO."
+    )
+    text = raw.lower()
+    heading_re = r"(?:#+\s*(?:\d+[\.\)]\s*)?|[-*]\s*\*\*(?:\d+[\.\)]\s*)?)"
     for section in ADR_SECTIONS:
-        assert re.search(rf"^(#+\s*|[-*]\s*\*\*){section}", text, re.MULTILINE), (
+        match = re.search(rf"^{heading_re}{section}\b[^\n]*$", text, re.MULTILINE)
+        assert match, (
             f"CA-4.4: {adrs[0].name} necesita un encabezado '{section}' "
             "(contexto, decisión, alternativas descartadas y consecuencias)."
+        )
+        rest = text[match.end() :]
+        next_heading = re.search(r"^(?:#+\s|[-*]\s*\*\*)", rest, re.MULTILINE)
+        body = rest[: next_heading.start()] if next_heading else rest
+        assert len(body.strip()) >= 10, (
+            f"CA-4.4: La sección '{section}' de {adrs[0].name} está vacía; "
+            "explica el razonamiento con tus palabras."
         )

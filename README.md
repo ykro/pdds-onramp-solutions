@@ -32,9 +32,9 @@ Este repositorio contiene las soluciones completas, limpias y verificadas de [yk
 | Paso 3 | Consultas de ventas por mes y top 5 de productos (`CA-3.1`, `CA-3.2`) | [db/queries/monthly_sales.sql](db/queries/monthly_sales.sql) y [db/queries/top_products.sql](db/queries/top_products.sql) |
 | Paso 3 | SKU como parámetro, fuera del texto SQL, y sin pedidos cancelados (`CA-3.3`) | [backend/tiendita/repositories/orders_repo.py](backend/tiendita/repositories/orders_repo.py) |
 | Paso 4 | Corrección de fuga de autorización en pedidos (`CA-4.1`) | [backend/tiendita/services/store_service.py](backend/tiendita/services/store_service.py) |
-| Paso 4 | Endpoint `GET /api/products/{sku}` a través de las 3 capas (`CA-4.2`, `CA-4.3`) | [backend/tiendita/api/app.py](backend/tiendita/api/app.py), [backend/tiendita/services/store_service.py](backend/tiendita/services/store_service.py) y [backend/tiendita/repositories/orders_repo.py](backend/tiendita/repositories/orders_repo.py) |
+| Paso 4 | Endpoint `GET /api/products/{sku}` a través de las 3 capas (`CA-4.2`, `CA-4.3`) | [backend/tiendita/api/app.py](backend/tiendita/api/app.py) y [backend/tiendita/services/store_service.py](backend/tiendita/services/store_service.py) |
 | Paso 4 | ADR sobre dónde vive la autorización (`CA-4.4`) | [docs/adr/0001-autorizacion-en-servicio.md](docs/adr/0001-autorizacion-en-servicio.md) |
-| Paso 5 | Corrección de `totalCents` en el carrito, `freeShippingRemainingCents` y el aviso de envío gratis en el catálogo (`CA-5.1` a `CA-5.3`); deploy opcional | [frontend/src/hooks/useCart.ts](frontend/src/hooks/useCart.ts), [frontend/src/views/FreeShippingNotice.tsx](frontend/src/views/FreeShippingNotice.tsx), [frontend/src/views/CatalogView.tsx](frontend/src/views/CatalogView.tsx), [vercel.json](vercel.json) y [deploy.json](deploy.json) |
+| Paso 5 | Corrección de `totalCents` en el carrito, `freeShippingRemainingCents` y el aviso de envío gratis en el catálogo (`CA-5.1` a `CA-5.3`); deploy opcional | [frontend/src/hooks/useCart.ts](frontend/src/hooks/useCart.ts), [frontend/src/views/FreeShippingNotice.tsx](frontend/src/views/FreeShippingNotice.tsx), [frontend/src/views/CatalogView.tsx](frontend/src/views/CatalogView.tsx) y [deploy.json](deploy.json) |
 
 Las respuestas a las preguntas de autoevaluación de cada paso viven al final de su `README.md` correspondiente.
 

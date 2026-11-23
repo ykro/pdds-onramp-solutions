@@ -29,7 +29,7 @@ En el posgrado entregarás cada proyecto en un Pull Request, y el CI decidirá s
 
 - **Leer**. Inspecciona `scripts/log_report.sh` y las primeras líneas de `data/access.log` para entender el formato de columnas y cómo se encadenan `wc`, `awk`, `sort` y `uniq`. Si quieres repasar comandos básicos del shell, abre [example/intro-terminal.md](example/intro-terminal.md).
 - **Debuguear**. Crea una rama nueva y corre `./scripts/log_report.sh data/access.log`, luego `./scripts/log_report.sh` sin argumento y con un archivo que no existe. Compara `errors_5xx` con lo que cuentas a mano en el log, y lee el error que sale cuando falta el archivo: ¿le serviría a quien lo encuentra a las 3 a. m. en un job de CI? Corrige las dos fallas.
-- **Escribir**. Completa la historia de usuario en `docs/stories/001-order-history.md` usando el formato Como / Quiero / Para y al menos dos criterios Dado / Cuando / Entonces. Luego abre tu Pull Request y contrasta tu trabajo contra la guía de [examples/code-review.md](../../examples/code-review.md).
+- **Escribir**. Completa la historia de usuario en `docs/stories/001-order-history.md` usando el formato Como / Quiero / Para y al menos dos criterios Dado / Cuando / Entonces. Luego abre tu Pull Request siguiendo [examples/historia-y-pr.md](../../examples/historia-y-pr.md) y contrasta tu trabajo contra la guía de [examples/code-review.md](../../examples/code-review.md).
 
 ![Flujo Git](diagrams/git-flow.svg)
 
@@ -50,6 +50,14 @@ En el posgrado entregarás cada proyecto en un Pull Request, y el CI decidirá s
 Ejecuta `make check STEP=1` desde la raíz del repositorio para validar los tres criterios en automático. Si te trabas, revisa los ejemplos en [example/intro-terminal.md](example/intro-terminal.md) y [example/sample_report.sh](example/sample_report.sh), o abre la [primera pista](hints/1.md).
 
 ## Respuestas de autoevaluación
+
+### Antes de empezar
+
+1. Corre `uv run pytest backend/tests/step1 -v`. Queda en rojo si cualquiera de las pruebas devuelve un código de salida distinto de `0`.
+2. La rama aísla el cambio en curso sin romper `main`, y el Pull Request deja revisar el diff y confirmar que el CI pase antes de integrarlo.
+3. Una historia verificable define quién la necesita, qué busca lograr y criterios concretos (Dado / Cuando / Entonces) con los que cualquiera comprueba si ya quedó lista.
+
+### Al terminar
 
 1. Con `0`, el pipeline sigue en verde y publica un reporte vacío; nadie se entera hasta que alguien lo lee. Con `1`, el job queda en rojo y avisa esa misma noche.
 2. Dado un log con una línea vacía al final, Cuando corro `log_report.sh`, Entonces `total_requests` no cuenta esa línea. El test crea un archivo temporal con esa línea y compara el conteo contra el mismo log sin ella.

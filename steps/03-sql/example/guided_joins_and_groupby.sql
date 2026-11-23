@@ -1,5 +1,5 @@
 -- Ejemplo guiado para el Paso 3.
--- Practica JOIN, GROUP BY, HAVING y agregaciones antes de implementar transacciones.
+-- Practica JOIN, GROUP BY, HAVING y agregaciones antes de escribir los reportes del paso.
 -- Asume las tablas de Tiendita: products, orders y order_items.
 
 -- 1. INNER JOIN básico
@@ -21,13 +21,14 @@ ORDER BY oi.order_id, p.name;
 -- COALESCE reemplaza NULL por 0 cuando un producto todavía no se ha vendido.
 SELECT
     p.id,
+    p.sku,
     p.name,
     COALESCE(SUM(oi.quantity), 0) AS units_sold
 FROM products AS p
 LEFT JOIN order_items AS oi
     ON oi.product_id = p.id
-GROUP BY p.id, p.name
-ORDER BY units_sold DESC, p.name ASC;
+GROUP BY p.id, p.sku, p.name
+ORDER BY units_sold DESC, p.sku ASC;
 
 -- 3. GROUP BY + HAVING + fechas por mes con TO_CHAR
 -- Filtra primero las filas individuales con WHERE (por ejemplo, pedidos pagados)
@@ -48,6 +49,6 @@ GROUP BY 1, p.category
 HAVING SUM(oi.quantity) >= 2
 ORDER BY 1 ASC, gross_revenue_cents DESC, p.category ASC;
 
--- 4. Verificación mental antes de pasar a transacciones
+-- 4. Verificación mental antes de entregar los reportes
 -- Observa que SUM(...) nunca debe devolverse como FLOAT; usa BIGINT o INTEGER
 -- y valida el plan de ejecución con EXPLAIN ANALYZE sobre datos reales.

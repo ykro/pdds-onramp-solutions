@@ -19,6 +19,11 @@ def test_ca_1_1_script_validates_missing_file() -> None:
     assert os.access(SCRIPT, os.X_OK), (
         "CA-1.1: scripts/log_report.sh necesita permiso de ejecución (chmod +x scripts/log_report.sh)."
     )
+    no_arg = subprocess.run([str(SCRIPT)], capture_output=True, text=True)
+    assert no_arg.returncode == 1 and "not found" in no_arg.stderr.lower(), (
+        "CA-1.1: Cuando no recibe argumento debe imprimir un error con 'not found' en stderr "
+        f"y salir con código 1 (returncode={no_arg.returncode}, stderr={no_arg.stderr.strip()!r})."
+    )
     missing = subprocess.run([str(SCRIPT), "data/does-not-exist.log"], capture_output=True, text=True)
     assert missing.returncode == 1 and "not found" in missing.stderr.lower(), (
         "CA-1.1: Cuando el archivo no existe debe imprimir un error con 'not found' en stderr "
@@ -69,11 +74,23 @@ def test_ca_1_3_user_story_complete() -> None:
         assert re.search(rf"\b{keyword}\b", text), (
             f"CA-1.3: La historia de usuario necesita '{keyword}' (formato Como / Quiero / Para)."
         )
-    criteria = [line for line in text.splitlines() if re.search(r"\bdado\b", line)]
-    ordered = [
-        line for line in criteria if re.search(r"\bdado\b.*\bcuando\b.*\bentonces\b", line)
+    section_match = re.search(
+        r"^#+\s*criterios\b.*?(?=^#+\s|\Z)",
+        text,
+        flags=re.MULTILINE | re.DOTALL,
+    )
+    criteria_text = section_match.group(0) if section_match else text
+    blocks = [
+        block
+        for block in re.split(r"(?=\bdado\b)", criteria_text)
+        if re.match(r"\bdado\b", block)
     ]
-    assert len(ordered) >= 2 and len(ordered) == len(criteria), (
-        "CA-1.3: Escribe al menos dos criterios, y cada uno en una línea con Dado, Cuando y "
-        "Entonces en ese orden."
+    ordered = [
+        block
+        for block in blocks
+        if re.search(r"\bdado\b[\s\S]*\bcuando\b[\s\S]*\bentonces\b", block)
+    ]
+    assert len(ordered) >= 2 and len(ordered) == len(blocks), (
+        "CA-1.3: Escribe al menos dos criterios en la sección de criterios de aceptación "
+        "con Dado, Cuando y Entonces en ese orden."
     )

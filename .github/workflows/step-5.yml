@@ -23,12 +23,16 @@ jobs:
         continue-on-error: true
         run: cd frontend && npm audit --audit-level=high
 
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: "3.12"
+
       - name: Production smoke test (runs when deploy.json has app_url)
         run: |
           APP_URL=$(python3 -c 'import json; print((json.load(open("deploy.json")).get("app_url") or "").strip())')
           if [ -n "$APP_URL" ]; then
-            pip install httpx pytest
-            pytest backend/tests/step5/test_prod_deploy.py -v
+            uv sync --frozen
+            uv run pytest backend/tests/step5/test_prod_deploy.py -v
           else
             echo "deploy.json sin app_url todavía; el deploy es opcional y se omite la prueba de producción."
           fi

@@ -51,6 +51,14 @@ Ejecuta `make check STEP=4` para validar los cuatro criterios en local usando el
 
 ## Respuestas de autoevaluación
 
+### Antes de empezar
+
+1. No podrías probarla como función normal: tendrías que simular requests HTTP, encabezados y tokens en cada prueba en lugar de pasarle un usuario y una lista en memoria al servicio.
+2. Autenticar confirma quién es la persona que envía el request; autorizar verifica si esa persona tiene permiso para ver o modificar el recurso pedido.
+3. Debe responder un error `404 Not Found`, porque se pidió un recurso puntual que no existe (una lista vacía `200` solo aplica al listar una colección sin resultados).
+
+### Al terminar
+
 1. Porque la regla de autorización vive en el servicio. Si mañana alguien cambia el repositorio o lo reemplaza por otro, el servicio sigue garantizando que nadie lee pedidos ajenos, y esa regla se puede testear sin base de datos.
 2. Con el token vencido responde `401 Unauthorized`. Con un token válido y sin pedidos responde `200 OK` con una lista vacía, porque la petición es correcta aunque no haya datos.
 3. Respuesta personal. Debe distinguir autenticación de autorización y describir el recorrido del endpoint por las tres capas.
